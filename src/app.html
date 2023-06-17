@@ -4,9 +4,28 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width" />
+		<script defer>
+			
+			function getHeight() {
+				let vh = window.innerHeight * 0.01;
+				document.documentElement.style.setProperty('--vh', `${vh}px`);
+			}
+			
+			let collapseOutside = document.getElementById('collapse-outside');
+	
+			if(collapseOutside !== null) {
+				let width = collapseOutside.offsetWidth;
+	
+				collapseOutside.style.setProperty('--collapse-outside-width', width + 'px');
+				collapseOutside.classList.add('collapse-outside-active');
+			}
+	
+			getHeight();
+			window.addEventListener('resize', getHeight);
+		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
+		<div style="display: contents;">%sveltekit.body%</div>
 	</body>
 </html>
