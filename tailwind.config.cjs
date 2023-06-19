@@ -6,6 +6,11 @@ module.exports = {
       fontFamily: {
         Mulish: ['Mulish', 'sans-serif'],
         IBMPlexMono: ['IBM Plex Mono', 'sans-serif'],
+      },
+      colors: {
+        primary: '#1E90FF',
+        lighter: '#6AB5FF',
+        secondary: '#FF8D1D'
       }
     },
   },

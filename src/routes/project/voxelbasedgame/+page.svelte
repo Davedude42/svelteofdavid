@@ -1,3 +1,15 @@
+<style>
+.threeCanvas {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+
+	width: 100vw;
+	height: calc(var(--vh) * 100);
+
+	user-select: none;
+}
+</style>
 {#if false}
 	<ProgramInfo>
 		<div class="text-center font-medium">Voxel Based Game</div>
@@ -21,16 +33,45 @@
 	</ProgramInfo>
 {/if}
 <div>
-	voxels
+	<canvas class="threeCanvas" bind:this={canvas}></canvas>
 </div>
 <script>
+import { VoxelBasedGame } from '$lib/voxelbasedgame/VoxelBasedGame';
+import { Renderer } from '$lib/voxelbasedgame/Renderer';
+
+
 import { onMount } from 'svelte';
 import ProgramInfo from '$lib/components/ProgramInfo.svelte';
+
 
 let canvas;
 let ctx;
 
+let game;
+let renderer;
+
+let lastStepTime;
+
 onMount(() => {
-	
+	game = new VoxelBasedGame();
+	renderer = new Renderer(canvas, game);
+
+	renderer.initialize();
+
+	lastStepTime = performance.now();
+
+	step();
 });
+
+function step() {
+	requestAnimationFrame(step);
+
+	let newStepTime = performance.now();
+
+	game.step(newStepTime - lastStepTime);
+
+	lastStepTime = newStepTime;
+
+	renderer.frame();
+}
 </script>

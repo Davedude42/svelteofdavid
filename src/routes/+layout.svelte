@@ -1,41 +1,108 @@
 <style>
+.lg-nav {
+	display: none;
 
-.collapse-outside {
+	position: fixed;
+	top: 1rem;
+	left: 1rem;
+	z-index: 40;
+	
+	flex-direction: row;
+	align-items: center;
+	gap: 2rem;
+
+	height: 3rem;
+
+	padding-left: 0.5rem;
+	padding-right: 1rem;
+
+	@apply bg-primary text-xl font-IBMPlexMono font-medium;
+}
+@media only screen and (min-width: 768px) {
+	.lg-nav {
+		display: flex;
+	}
+}
+.sm-nav {
+	position: fixed;
+	top: 1rem;
+	left: 1rem;
+	z-index: 40;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	
+	width: 3rem;
+	height: 3rem;
+
+	transition: width 0.3s 0.3s, height 0.3s;
 	overflow: hidden;
-	transition: width 700ms, color 400ms;
-	width: var(--collapse-outside-width, min-content);
-
-	color: rgb(0 0 0 / 100);
+	
+	@apply bg-primary text-xl font-IBMPlexMono font-medium;
+}
+@media only screen and (min-width: 768px) {
+	.sm-nav {
+		display: none;
+	}
 }
 
-.outside-corner-menu:not(:hover) .collapse-outside-active:not(.force-open) {
-	width: 0px;
-	color: rgb(0 0 0 / 0);
+.popoverOpen {
+
+	width: calc(100% - 2rem);
+	height: 10rem;
+
+	justify-content: start;
+	
+	transition: width 0.3s, height 0.3s 0.3s;
 }
 
 </style>
-
-<div class="group outside-corner-menu fixed left-0 top-0 flex flex-row min-w-[360px] p-2 overflow-visible font-Mulish">
-	<div class="corner-menu flex flex-row items-center p-1.5 pr-3 bg-gray-500/60 rounded-full font-[600] whitespace-nowrap" id="corner-menu">
-		<a class="flex flex-row items-center pr-1 hover:underline cursor-pointer" href="/">
-			<img class="w-7 h-7 mr-2 transform group-hover:rotate-180 transition-transform duration-[700ms]" src={logo} alt="Cute little aperature--It's my logo!">
-			David Haroldsen
-		</a>
-		<div class="collapse-outside overflow-hidden force-open" id="collapse-outside">
-			<div class="flex flex-row pl-4 collapse-inside">
-				<a class="px-3 hover:underline cursor-pointer" href="/about">About</a>
-				<a class="px-3 hover:underline cursor-pointer" href="/projectList">Projects</a>
-			</div>
+<nav class="top-nav lg-nav thick-black-border">
+	<a class="flex flex-row items-center cursor-pointer" href="/">
+		<img class="inline h-8" src={logo} alt="Amazing little aperature--It's my logo!">
+		<span class="pl-2 hover:underline">David Haroldsen</span>
+	</a>
+	<a class="hover:underline cursor-pointer" href="/about">About</a>
+	<a class="hover:underline cursor-pointer" href="/projectList">Projects</a>
+</nav>
+<div class="top-nav sm-nav nav-button thick-black-border" class:popoverOpen on:click={togglePopover}>
+	{#if !popoverOpen}
+		<i class="fa-solid fa-bars nav-button"></i>
+	{:else}
+		<div class="flex flex-col justify-evenly min-h-[9.5rem] whitespace-nowrap">
+			<a class="flex flex-row items-center h-8 mr-10 cursor-pointer" href="/">
+				<img class="inline h-8" src={logo} alt="Amazing little aperature--It's my logo!">
+				<span class="pl-2 hover:underline">David Haroldsen</span>
+			</a>
+			<a class="hover:underline cursor-pointer h-8 ml-10" href="/about">About</a>
+			<a class="hover:underline cursor-pointer h-8 ml-10" href="/projectList">Projects</a>
 		</div>
-		<!-- I have to add this freakin element because otherwise svelte ignores my css >:( -->
-		<div class="collapse-outside-active"></div>    
-	</div>
+	{/if}
 </div>
 <div class="flex flex-col h-full-fr">
 	<slot />
 </div>
+<svelte:window
+  on:click={tryClosePopover}
+/>
 <script lang="ts">
 	import "../app.css";
 
-	import logo from '$lib/assets/imgs/dodgerblueSmallBlack.png';
+	import logo from '$lib/assets/imgs/whiteSmallBlack.png';
+
+	let popoverOpen = false;
+
+	let popoverButton;
+
+	function togglePopover() {
+		popoverOpen = !popoverOpen;
+	}
+
+	function tryClosePopover(e) {
+		if(!e.target.closest('.nav-button')) {
+			popoverOpen = false;
+		}
+	}
 </script>
