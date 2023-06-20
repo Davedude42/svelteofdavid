@@ -54,14 +54,22 @@ let lastStepTime;
 
 onMount(() => {
 	game = new VoxelBasedGame();
+	game.onRenderChunk(renderChunk);
+
 	renderer = new Renderer(canvas, game);
 
 	renderer.initialize();
+
+	game.generateWorld();
 
 	lastStepTime = performance.now();
 
 	step();
 });
+
+function renderChunk(cx, cz) {
+	renderer.renderChunk(cx, cz);
+}
 
 function step() {
 	requestAnimationFrame(step);

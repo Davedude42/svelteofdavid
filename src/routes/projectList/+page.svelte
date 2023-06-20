@@ -1,34 +1,50 @@
 <style>
-.program-grid {
+.projects-grid {
 	display: grid;
+	grid-template-columns: min(40rem, 100%);
+	gap: 1rem;
+	justify-content: center;
+}
+.project-item {
+	display: grid;
+	grid-template-columns: 8rem 1fr;
 	grid-template-rows: min-content 1fr;
-	grid-template-columns: 140px 1fr;
-	align-items: stretch;
-	row-gap: 8px;
-	column-gap: 30px;
-	
-	height: 140px;
-	box-sizing: content-box;
+	row-gap: 1rem;
+	column-gap: 2rem;
 
-	transition: max-width 0.5s;
-}
-.program-grid img.program-image {
-	grid-row: 1 / span 2;
-	grid-column: 1 / span 1;
-}
-.program-grid .program-title {
-	grid-row: 1 / span 1;
-	grid-column: 2 / span 1;
+	padding: 1rem;
 
-	@apply text-2xl;
+	font-weight: 500;
 }
-.program-grid .program-description {
-	grid-row: 2 / span 1;
-	grid-column: 2 / span 1;
-
-	@apply pl-6 text-lg;
+.project-item img {
+	height: 8rem;
 }
 </style>
+<div class="relative flex-grow flex flex-col items-stretch">
+	<div class="flex flex-row items-stretch justify-center h-12 p-4 box-content">
+		<div class="flex flex-row items-center justify-center px-4 min-w-[192px] thick-black-border bg-white text-2xl font-IBMPlexMono font-medium box-content">
+			Projects
+		</div>
+	</div>
+	<div class="projects-grid p-4 font-">
+		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/voxelbasedgame">
+			<img src={vbgImage} alt="My mindcraft" class="row-span-2 thick-black-border" />
+			<div class="font-IBMPlexMono text-2xl">Voxel Based Game</div>
+			<div class="text-lg">A completely original idea, one of a kind</div>
+		</a>
+		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/lightblue">
+			<img src={lightblueImage} alt="A board of Light Blue" class="row-span-2 thick-black-border" />
+			<div class="font-IBMPlexMono text-2xl">Light Blue</div>
+			<div class="text-lg">Who knew computers could be good at chess?</div>
+		</a>
+		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/ledlights">
+			<img src={lightblueImage} alt="Light Emitting Diodes" class="row-span-2 thick-black-border" />
+			<div class="font-IBMPlexMono text-2xl">LED Lights</div>
+			<div class="text-lg">My strip of Light Emitting Diodes</div>
+		</a>
+	</div>
+</div>
+<!--
 <div class="flex-grow flex flex-col items-center w-full">
 	<div class="p-8 text-5xl text-center">Projects</div>
 	<div class="grid grid-cols-1 justify-items-stretch gap-6 py-6" style="max-width: 700px;">
@@ -91,3 +107,8 @@
 		</a>
 	</div>
 </div>
+-->
+<script>
+import vbgImage from '$lib/assets/imgs/projects/voxelbasedgame.jpg';
+import lightblueImage from '$lib/assets/imgs/projects/lightblue.jpg';
+</script>
