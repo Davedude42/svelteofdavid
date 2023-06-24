@@ -16,6 +16,11 @@
 
 	font-weight: 500;
 }
+.project-item:active {
+	transform: translate(4px, 4px);
+
+	box-shadow: 2px 2px black;
+}
 .project-item img {
 	height: 8rem;
 }
@@ -26,7 +31,7 @@
 			Projects
 		</div>
 	</div>
-	<div class="projects-grid p-4 font-">
+	<div class="projects-grid p-4">
 		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/voxelbasedgame">
 			<img src={vbgImage} alt="My mindcraft" class="row-span-2 thick-black-border" />
 			<div class="font-IBMPlexMono text-2xl">Voxel Based Game</div>
