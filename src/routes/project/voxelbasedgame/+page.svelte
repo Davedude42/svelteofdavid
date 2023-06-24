@@ -36,8 +36,8 @@
 	<canvas class="threeCanvas" bind:this={canvas}></canvas>
 </div>
 <script>
-import { VoxelBasedGame } from '$lib/voxelbasedgame/VoxelBasedGame';
-import { Renderer } from '$lib/voxelbasedgame/Renderer';
+import { VoxelBasedGame } from '$lib/voxelbasedgame/VoxelBasedGame.mjs';
+import { Renderer } from '$lib/voxelbasedgame/Renderer.mjs';
 
 
 import { onMount } from 'svelte';
