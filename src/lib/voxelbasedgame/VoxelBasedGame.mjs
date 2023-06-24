@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-//import { Chunk } from 'Chunk.mjs';
+import { Chunk } from './Chunk.mjs';
 import { Player } from './Player.mjs';
 
 export class VoxelBasedGame {
