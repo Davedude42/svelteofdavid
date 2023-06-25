@@ -33,12 +33,19 @@
 	</ProgramInfo>
 {/if}
 <div>
-	<canvas class="threeCanvas" bind:this={canvas}></canvas>
+	<div class="absolute top-0 right-0 z-50">
+		{ console }<br>
+		frame: { frameSpeed.toFixed(1) }ms<br>
+		FPS: { (1/(frameSpeed/1000)).toFixed(0) }
+	</div>
+	<canvas class="threeCanvas" bind:this={canvas} on:click={click} on:mousemove={mousemove}></canvas>
 </div>
+<svelte:window on:keydown={keydown} on:keyup={keyup} />
 <script>
 import { VoxelBasedGame } from '$lib/voxelbasedgame/VoxelBasedGame.js';
 import { Renderer } from '$lib/voxelbasedgame/Renderer.js';
 
+import { SENSITIVITY } from '$lib/voxelbasedgame/Constants.js';
 
 import { onMount } from 'svelte';
 import ProgramInfo from '$lib/components/ProgramInfo.svelte';
@@ -51,6 +58,16 @@ let game;
 let renderer;
 
 let lastStepTime;
+
+let keyMap = {
+	KeyW: 0,
+	KeyA: 0,
+	KeyS: 0,
+	KeyD: 0,
+};
+
+let console = '';
+let frameSpeed = 0;
 
 onMount(() => {
 	game = new VoxelBasedGame();
@@ -76,10 +93,39 @@ function step() {
 
 	let newStepTime = performance.now();
 
-	game.step(newStepTime - lastStepTime);
+	game.step(newStepTime - lastStepTime, keyMap);
+	frameSpeed = (newStepTime - lastStepTime);
+
+	for (const key in keyMap) {
+		if(keyMap[key] === 1) keyMap[key] = 2;
+	}
 
 	lastStepTime = newStepTime;
 
 	renderer.frame();
+	
+	console = `${ game?.player?.position?.x?.toFixed(2) } ${ game?.player?.position?.y?.toFixed(2) } ${ game?.player?.position?.z?.toFixed(2) }`;
+}
+
+function click(event) {
+	canvas.requestPointerLock()
+}
+function keydown(event) {
+	let key = event.code;
+
+	keyMap[key] = 1;
+}
+function keyup(event) {
+	let key = event.code;
+
+	keyMap[key] = 0;
+}
+function mousemove(event) {
+	const movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+	const movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+	game.player.euler.y -= movementX * SENSITIVITY;
+	game.player.euler.x -= movementY * SENSITIVITY;
+	game.player.euler.x = Math.min(Math.max(game.player.euler.x, -Math.PI/2+0.01), Math.PI/2-0.01);
+
 }
 </script>

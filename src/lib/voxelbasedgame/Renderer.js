@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+import { CAMERA_HEIGHT } from './Constants.js';
 
 import textureMap from '$lib/voxelbasedgame/texturemap.png';
 
@@ -88,7 +89,6 @@ export class Renderer {
 	texture;
 	material;
 
-	controls;
 	axesHelper;
 
 	meshes;
@@ -107,13 +107,9 @@ export class Renderer {
 		this.aspect = (window.innerWidth) / window.innerHeight;
 		
 		this.camera = new THREE.PerspectiveCamera( this.fov, this.aspect, this.near, this.far );
-		this.camera.position.set(0, 91.7, 0);
+		this.camera.position.set(0, 0, 0);
 		this.scene = new THREE.Scene();
 		this.scene.background = new THREE.Color('lightblue');
-
-		this.controls = new OrbitControls(this.camera, this.canvas);
-		this.controls.target.set(0, 70, 0);
-		this.controls.update();
 		
 		this.axesHelper = new THREE.AxesHelper( 1 );
 		this.axesHelper.position.set(0, 90, 0);
@@ -222,8 +218,11 @@ export class Renderer {
 		this.scene.add(mesh);
 	}
 	frame() {
-		this.controls.update();
+		this.camera.position.copy(this.game.player.position);
+		this.camera.position.y += CAMERA_HEIGHT;
+
+		this.camera.quaternion.setFromEuler(this.game.player.euler);
 	
-		this.renderer.render( this.scene, this.camera );
+		this.renderer.render(this.scene, this.camera);
 	}
 }
