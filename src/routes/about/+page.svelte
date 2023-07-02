@@ -50,27 +50,50 @@
 		max-width: 72rem;
 	}
 }
-.slideshow-grid {
-	display: grid;
-	grid-template-rows: 1fr;
-	align-items: stretch;
+.scene {
+	position: relative;
+	width: 100%;
+
+	perspective: 1000px;
+
+	overflow: hidden;
+}
+.carousel {
+	position: absolute;
+	
+	width: 100%;
+	height: 100%;
+
+  transform-style: preserve-3d;
+
+	
+}
+.carousel-cell {
+	display: flex;
+	flex-direction: column;
+
+	position: absolute;
+	top: 10px;
+	left: 10px;
+
+	width: 190px;
+	height: 140px;
+	border: 4px solid black;
+	
+	background-color: white;
+
+	@apply font-IBMPlexMono;
 }
 
-.slideshow-grid.transition {
-	transition: transform 0.25s;
-}
+.carousel-cell img {
+	position: absolute;
+	inset: 0px;
 
-.rubikscube {
-	background: url('/staticimgs/rubikscube.jpg');
+	width: 100%;
+	height: 100%;
 
-	background-size: cover;
-	background-position: center;
-}
-.catan {
-	background: url('/staticimgs/catan.jpg');
-
-	background-size: cover;
-	background-position: center;
+	object-fit: cover;
+	object-position: center;
 }
 </style>
 <div class="relative flex-grow flex flex-col items-center">
@@ -126,123 +149,137 @@
 				<li>14. git</li>
 			</ul>
 		</div>
-		<div class="more-about-me thick-black-border comic-shadow bg-lighter p-4 font-medium">
+		<div class="more-about-me thick-black-border flex flex-col comic-shadow bg-lighter p-4 font-medium">
 			<h3 class="pb-2 text-2xl font-IBMPlexMono font-medium">
 				More about me
 			</h3>
 			<p class="py-2">
 				I do some things other than programming too every once in a while. Here is an interactive slideshow of other things I do:
 			</p>
-			<div class="relative mt-2 h-72 thick-black-border bg-white font-IBMPlexMono font-medium overflow-hidden box-content" bind:this={slideshow}>
-				<div class="z-30 absolute left-0 top-1/3 px-1 py-2 thick-black-border border-l-0 bg-white hover:bg-gray-100 cursor-pointer" on:click={leftSlide}><i class="fa-solid fa-angle-left"></i></div>
-				<div class="z-30 absolute right-0 top-1/3 px-1 py-2 thick-black-border border-r-0 bg-white hover:bg-gray-100 cursor-pointer" on:click={rightSlide}><i class="fa-solid fa-angle-right"></i></div>
-				<div class="slideshow-grid h-full overflow-hidden" class:transition bind:this={slideshowGrid} style="transform: translateX({offsetGrid}px);">
-					<div class="flex flex-col">
-						<div class="flex-grow catan"></div>
-						<div class="border-t-4 border-black p-4">
-							3d Printed Catan<br>
-							Hey, we should play sometime.
+			<div class="scene" bind:this={sceneEl}>
+				<div class="carousel" bind:this={carouselEl}>
+					<div class="carousel-cell">
+						<div class="flex-grow relative overflow-hidden">
+							<img src={scouts} alt="big ol rubik's cube">
+						</div>
+						<div class="p-4 border-t-4 border-black">
+							<p class="pb-1 font-bold">Boy Scouts</p>
+							<p class="text-sm">I am more outdoorsy than the average person.</p>
 						</div>
 					</div>
-					<div class="flex flex-col">
-						<div class="flex-grow rubikscube"></div>
-						<div class="border-t-4 border-black p-4">
-							Rubik's Cube<br>
-							Record: 40 sec
+					<div class="carousel-cell">
+						<div class="flex-grow relative overflow-hidden">
+							<img src={rubikscube} alt="big ol rubik's cube">
+						</div>
+						<div class="p-4 border-t-4 border-black">
+							<p class="pb-1 font-bold">Rubik's Cube</p>
+							<p class="text-sm">3x3 Record: 40 sec</p>
 						</div>
 					</div>
-					<div class="flex flex-col">
-						<div class="flex-grow catan"></div>
-						<div class="border-t-4 border-black p-4">
-							3d Printed Catan<br>
-							Hey, we should play sometime.
+					<div class="carousel-cell">
+						<div class="flex-grow relative overflow-hidden">
+							<img src={catan} alt="big ol rubik's cube">
+						</div>
+						<div class="p-4 border-t-4 border-black">
+							<p class="pb-1 font-bold">3d Printed Catan</p>
+							<p class="text-sm">Hey, we should play sometime</p>
 						</div>
 					</div>
-					<div class="flex flex-col">
-						<div class="flex-grow rubikscube"></div>
-						<div class="border-t-4 border-black p-4">
-							Rubik's Cube<br>
-							Record: 40 sec
+					<div class="carousel-cell">
+						<div class="flex-grow relative overflow-hidden">
+							<img src={catan} alt="big ol rubik's cube">
+						</div>
+						<div class="p-4 border-t-4 border-black">
+							<p class="pb-1 font-bold">3d Printed Catan</p>
+							<p class="text-sm">Hey, we should play sometime</p>
+						</div>
+					</div>
+					<div class="carousel-cell">
+						<div class="flex-grow relative overflow-hidden">
+							<img src={catan} alt="big ol rubik's cube">
+						</div>
+						<div class="p-4 border-t-4 border-black">
+							<p class="pb-1 font-bold">3d Printed Catan</p>
+							<p class="text-sm">Hey, we should play sometime</p>
 						</div>
 					</div>
 				</div>
+			</div>
+			<div class="flex flex-row gap-2" style="padding: 10px; padding-top: 0px;">
+				<button class="flex-1 thick-black-border h-10 bg-white hover:bg-gray-100 active:bg-gray-200" on:click={prevSlide}><i class="fa-solid fa-chevron-left"></i></button>
+				<button class="flex-1 thick-black-border h-10 bg-white hover:bg-gray-100 active:bg-gray-200" on:click={nextSlide}><i class="fa-solid fa-chevron-right"></i></button>
 			</div>
 		</div>
 	</div>
 </div>
 <svelte:window
-  on:resize={slideshowWidth}
+	on:resize={recreateCarousel}
 />
 <script>
 import { onMount } from 'svelte';
 
 import mee from '$lib/assets/imgs/mee.jpg';
+import rubikscube from '$lib/assets/imgs/about/rubikscube.jpg';
+import catan from '$lib/assets/imgs/about/catan.jpg';
+import scouts from '$lib/assets/imgs/about/scouts.jpg';
 
-let slideshow;
-let slideshowGrid;
+let sceneEl;
+let carouselEl;
 
-let nSlides = 2;
+let cellWidth = 0;
+let cellHeight = 0;
 
-let width;
+let selectedCell = 0;
 
-let slide = 0;
+function recreateCarousel() {
+	let w = carouselEl.offsetWidth;
+	let h = w;
 
-let transition = false;
+	sceneEl.style.height = h + 'px';
 
-let autoSlideInterval = setInterval(rightAutoSlide, 10000);
+	cellWidth = w - 20;
+	cellHeight = h - 20;
 
-$: offsetGrid = -((slide + 1) * width);
+	let kiddies = carouselEl.children;
 
-function slideshowWidth() {
+	let theta = 360 / kiddies.length;
+	let depth = (w / 2) / Math.tan((theta / 2)/180*Math.PI);
 
-	width = slideshow.offsetWidth - 8;
+	for (let i = 0; i < kiddies.length; i++) {
+		kiddies[i].style.width = cellWidth + 'px';
+		kiddies[i].style.height = cellHeight + 'px';
 
-	slideshow.style.width = width + 'px';
-	slideshowGrid.style.width = ((nSlides + 2) * width) + 'px';
-	slideshowGrid.style.gridTemplateColumns = `repeat(${nSlides + 2}, ${width}px)`;
-}
+		kiddies[i].style.transform = `rotateY(${theta * i}deg) translateZ(${depth}px)`;
 
-function leftSlide() {
-	clearInterval(autoSlideInterval);
-
-	slide--;
-	
-	transition = true;
-
-	setTimeout(() => {
-		transition = false;
-		if(slide <= -1) {
-			slide = nSlides - 1;
+		/*let nearestYouCouldCallIt = selectedCell;
+		if(selectedCell < i) {
+			while(Math.abs(nearestYouCouldCallIt - i) > kiddies.length / 2) nearestYouCouldCallIt += kiddies.length;
 		}
-	}, 250);
-}
-function rightSlide() {
-	clearInterval(autoSlideInterval);
-
-	slide++;
-	
-	transition = true;
-
-	setTimeout(() => {
-		transition = false;
-		if(slide >= nSlides) {
-			slide = 0;
+		if(selectedCell > i) {
+			while(Math.abs(nearestYouCouldCallIt - i) > kiddies.length / 2) nearestYouCouldCallIt -= kiddies.length;
 		}
-	}, 250);
-}
-function rightAutoSlide() {
-	slide++;
-	
-	transition = true;
 
-	setTimeout(() => {
-		transition = false;
-		if(slide >= nSlides) {
-			slide = 0;
-		}
-	}, 250);
+		if(Math.abs(nearestYouCouldCallIt - i) <= 1) {
+			kiddies[i].style.opacity = 1;
+		} else {
+			kiddies[i].style.opacity = 0;
+		}*/
+	}
+
+	carouselEl.style.transform = `translateZ(-${depth}px) rotateY(${-theta * selectedCell}deg)`;
+	setTimeout(() => carouselEl.style.transition = 'transform 0.5s', 100);
 }
 
-onMount(slideshowWidth);
+function prevSlide() {
+	selectedCell--;
 
+	recreateCarousel();
+}
+function nextSlide() {
+	selectedCell++;
+
+	recreateCarousel();
+}
+
+onMount(recreateCarousel);
 </script>
