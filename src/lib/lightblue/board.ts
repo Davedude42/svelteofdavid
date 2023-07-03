@@ -147,7 +147,9 @@ export class Board {
 
 			loopBoard.movePiece(moveon);
 
-			if(loopBoard.inCheck(loopBoard.turn)) {
+			if(loopBoard.gameOver(loopBoard.turn) === 1) {
+				retNot += '#';
+			} else if(loopBoard.inCheck(loopBoard.turn)) {
 				retNot += '+';
 			}
 			

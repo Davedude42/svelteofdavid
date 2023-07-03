@@ -81,7 +81,7 @@
 		</div>
 	{/if}
 </div>
-<div class="flex flex-col h-full-fr">
+<div class="flex flex-col min-h-full-fr">
 	<slot />
 </div>
 <svelte:window

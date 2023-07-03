@@ -1,10 +1,13 @@
 <style>
 .lightblue-grid {
+	flex-shrink: 0;
 	display: grid;
-	grid-template-columns: 380px;
+	grid-template-columns: 1fr;
 	grid-template-rows: 100px 1fr 100px;
 	justify-content: center;
 	gap: 24px;
+
+	width: 440px;
 
 	padding: 32px;
 }
@@ -14,14 +17,40 @@
 
 	border: 4px solid black;
 }
+
+.outlandish-button {
+	box-shadow: 4px 4px black;
+}
+
+.outlandish-button:active {
+	transform: translate(4px, 4px);
+
+	box-shadow: none;
+}
 </style>
-<div class="flex flex-col md:flex-row justify-evenly bg-neutral-700 min-h-full" style="padding-top: 80px">
+<svelte:window on:resize={() => { resizeBoard(); drawBoard(); }} />
+<div class:hidden={!pgnPopupOpen} class="fixed z-40 inset-0 flex flex-col items-center justify-center bg-black/40">
+	<div style="width: 500px; height: 400px;" class="thick-black-border flex flex-col gap-4 p-4 bg-lighter">
+		<div class="flex flex-row justify-between">
+			<button class="outlandish-button thick-black-border p-1 bg-white font-semibold" style="width: 150px;" on:click={copyPGN}>
+				Copy
+			</button>
+			<button class="thick-black-border p-1 bg-red-500 hover:bg-red-400 active:bg-red-300 font-semibold" style="width: 40px; height: 40px;" on:click={() => pgnPopupOpen = false}>
+				<i class="fa-solid fa-xmark"></i>
+			</button>
+		</div>
+		<div class="flex-grow p-2">
+			<textarea class="w-full h-full p-2 font-IBMPlexMono text-sm font-medium resize-none" bind:value={pgnNotation} bind:this={notationTextarea} />
+		</div>
+	</div>
+</div>
+<div class="flex-grow flex flex-col md:flex-row justify-evenly bg-neutral-700" style="padding-top: 80px">
 	{#if gameStarted}
-		<div class="flex flex-row items-center justify-center p-8" bind:this={wrapper}>
+		<div class="flex-grow lg:flex-grow-0 flex-shrink flex flex-row items-center justify-center max-w-full max-h-full p-8 overflow-hidden" bind:this={wrapper}>
 			<canvas class="box-content thick-black-border select-none" bind:this={canvas} on:mousedown={mouseDown}></canvas>
 		</div>
 	{/if}
-	<div class="lightblue-grid">
+	<div class="lightblue-grid self-center md:self-stretch">
 		<div class="flex flex-row justify-between">
 			<img src={ thinking } alt="current state of bot" class="px-4 py-2 select-none" class:hidden={!(loading)} />
 			<img src={ welcome } alt="current state of bot" class="px-4 py-2 select-none" class:hidden={!(!loading && !showComputerStuff)} />
@@ -33,29 +62,51 @@
 						<p>{ board.metaData.nodes } nodes</p>
 						<p>{ (board.metaData.time / board.metaData.nodes)?.toFixed(2) }ms per node</p>
 					</div>
+				{:else if !loading}
+					<div class="flex-grow flex flex-col justify-center px-4 font-IBMPlexMono font-medium text-center">
+						Start us off.
+					</div>
 				{/if}
 			{:else}
-				<div class="flex flex-col justify-center px-4 font-IBMPlexMono font-semibold text-center">
+				<div class="flex-grow flex flex-col justify-center px-4 font-IBMPlexMono font-semibold text-center">
 					Light Blue welcomes you.
 				</div>
 			{/if}
 		</div>
-		<div class="p-8 overflow-auto">
-			{#if gameStarted}
-				<div>
+		{#if gameStarted} 
+			<div class="grid grid-cols-2 overflow-hidden" style="min-height: 300px;">
+				<div class="flex flex-col gap-4 p-4">
+					{#if gameOver} 
+						<div class="p-2 font-IBMPlexMono bg-primary font-semibold text-center text-xl">
+							{#if draw} 
+								Draw!
+							{:else}
+								{ checkmateColor === playerColor ? 'I' : 'You' } won!
+							{/if}
+						</div>
+					{/if}
+					<div class="flex-grow"></div>
+					<button class="outlandish-button thick-black-border p-2 bg-white font-semibold" on:click={openPGN}>
+						Copy Notation
+					</button>
+					<button class="outlandish-button thick-black-border p-2 bg-white font-semibold" on:click={restart}>
+						Leave Game
+					</button>
+				</div>
+				<div class="grid grid-cols-2 gap-y-2 p-2 content-start items-start justify-items-start font-IBMPlexMono overflow-y-scroll" bind:this={notationScroll}>
 					{#each notation as note}
-						<p>
+						<div class="px-1 bg-secondary/50 font-bold">
 							{ note }
-						</p>
+						</div>
 					{/each}
 				</div>
-			{:else}
-				<div class="flex flex-col gap-6 align-stretch">
-					<button class="thick-black-border p-2 bg-white hover:bg-gray-100 text-lg font-semibold" on:click={() => startAs(1)}>Start as white</button>
-					<button class="thick-black-border p-2 bg-black hover:bg-gray-800 text-lg font-semibold text-white" on:click={() => startAs(0)}>Start as black</button>
-				</div>
-			{/if}
-		</div>
+			</div>
+		{:else}
+			<div class="flex flex-col p-8 gap-6 align-stretch">
+				<button class="outlandish-button thick-black-border p-2 bg-white text-lg font-semibold" on:click={() => startAs(1)}>Start as white</button>
+				<button class="outlandish-button thick-black-border p-2 bg-black text-lg font-semibold text-white" on:click={() => startAs(0)}>Start as black</button>
+			</div>
+		{/if}
 		{#if gameStarted}
 			<div class="flex flex-col">
 				<div class="flex-grow flex flex-col items-center justify-center text-xl font-IBMPlexMono font-medium">
@@ -72,7 +123,7 @@
 import { onMount, tick } from 'svelte';
 
 import { Board } from '$lib/lightblue/board.ts';
-import { startingPosition, letters } from '$lib/lightblue/constants.ts';
+import { KING, startingPosition, letters } from '$lib/lightblue/constants.ts';
 import { legalPieceMoves } from '$lib/lightblue/moves.ts';
 import { computerMoveBoard } from '$lib/lightblue/computer.ts';
 
@@ -81,6 +132,8 @@ import pieces from '$lib/lightblue/pieces.png';
 import done from '$lib/lightblue/done.png';
 import thinking from '$lib/lightblue/thinking.png';
 
+let notationTextarea;
+let notationScroll;
 let wrapper;
 let canvas;
 
@@ -100,14 +153,65 @@ let heldIndex = -1;
 let gameStarted = false;
 let showComputerStuff = false;
 let loading = false;
+let gameOver = false;
+
+let checkIndex = -1;
+let checkmateColor = -1;
+let draw = false;
 
 let pieceMoves = [];
 
 let score = 0;
 let notation = [];
 
-board.importString(startingPosition);
-board.eval();
+let pgnPopupOpen = false;
+let pgnNotation = '';
+
+function copyPGN() {
+	notationTextarea.select();
+  navigator.clipboard.writeText(pgnNotation);
+}
+
+function openPGN() {
+	pgnPopupOpen = true;
+	pgnNotation = getPGNNotation();
+}
+
+function getPGNNotation() {
+		let now = new Date();
+		let whiteGameOver = board.gameOver(1);
+		let blackGameOver = board.gameOver(0);
+		let stringResult = '*';
+
+		if(whiteGameOver === -1 || blackGameOver === -1) {
+			stringResult = '1/2-1/2';
+		} else if(whiteGameOver === 1) {
+			stringResult = '0-1';
+		} else if(blackGameOver === 1) {
+			stringResult = '1-0';
+		}
+
+		let ret = `[Event "Light Blue vs. Human"]
+[Site "davidharoldsen.com"]
+[Date "${now.getFullYear()}.${now.getMonth()<10 ? '0' + now.getMonth() : now.getMonth()}.${now.getDate()<10 ? '0' + now.getDate() : now.getDate()}"]
+[Round "1"]
+[White "${playerColor === 0 ? 'Light Blue' : 'Player'}"]
+[Black "${playerColor === 1 ? 'Light Blue' : 'Player'}"]
+[Result "${stringResult}"]
+
+`;
+
+		let notation = board.getNotation();
+
+		for (let i = 0; i < notation.length; i++) {
+			if(i % 2 === 0) {
+				ret += Math.floor(i / 2 + 1) + '. ';
+			}
+			ret += notation[i] + ' ';
+		}
+		ret += stringResult;
+		return ret;
+	}
 
 function eventX(event) {
 	let ret = 0;
@@ -132,7 +236,7 @@ function eventY(event) {
 
 
 function mouseDown(event) {
-	if(!gameStarted || playerColor !== board.turn || loading) {
+	if(!gameStarted || playerColor !== board.turn || loading || gameOver) {
 		return;
 	}
 
@@ -156,7 +260,8 @@ function mouseDown(event) {
 	} else {
 		if(pieceMoves.includes(index)) {
 			board.movePiece([highlightedIndex, index]);
-			updateScore();
+
+			afterMove();
 
 			highlightedIndex = -1;
 			
@@ -175,7 +280,22 @@ function mouseDown(event) {
 function resizeBoard() {
 	let scale = window.devicePixelRatio;
 
-	boardWidth = Math.min(500, wrapper.offsetHeight - 8 - 64);
+	let width = Math.max(
+    document.body.scrollWidth,
+    document.documentElement.scrollWidth,
+    document.body.offsetWidth,
+    document.documentElement.offsetWidth,
+    document.documentElement.clientWidth
+  );
+
+	if(width > 1024) {
+		boardWidth = Math.min(500, Math.min(wrapper.offsetHeight - 8 - 64));
+	} else if(width > 768) {
+		boardWidth = Math.min(500, Math.min(wrapper.offsetWidth - 8 - 64, wrapper.offsetHeight - 8 - 64));
+	} else {
+		boardWidth = Math.min(500, Math.min(wrapper.offsetWidth - 8 - 64));
+	}
+	
 
 	ctx.restore();
 
@@ -198,22 +318,28 @@ function drawBoard() {
 
 	let px, py;
 
+	let pastMove = board.history[board.history.length - 1] ?? [];
+
 	for (let x = 0; x < 8; x++) {
 		for (let y = 0; y < 8; y++) {
 			px = playerColor === 0 ? 7 - x : x;
 			py = playerColor === 0 ? 7 - y : y;
 
 			if(x % 2 === y % 2) {
-				if(x + y*8 === highlightedIndex) {
-					ctx.fillStyle = '#fde047';
-				} else {
-					ctx.fillStyle = '#6AB5FF';
-				}
-			} else {
-				if(x + y*8 === highlightedIndex) {
+				if(x + y*8 === highlightedIndex || pastMove.includes(x + y*8)) {
 					ctx.fillStyle = '#fef08a';
+				} else if(x + y*8 === checkIndex) {
+					ctx.fillStyle = '#fca5a5';
 				} else {
 					ctx.fillStyle = 'white';
+				}
+			} else {
+				if(x + y*8 === highlightedIndex || pastMove.includes(x + y*8)) {
+					ctx.fillStyle = '#fde047';
+				} else if(x + y*8 === checkIndex) {
+					ctx.fillStyle = '#f87171';
+				} else {
+					ctx.fillStyle = '#6AB5FF';
 				}
 			}
 
@@ -236,40 +362,75 @@ function drawBoard() {
 					ctx.fillRect((px+0.1) * size, (py+0.9) * size, 0.8*size, 0.1*size);
 				}
 			}
-
-			ctx.drawImage(piecesImg, numbersToSprite[p[1]] * imageSize, p[2] * imageSize, imageSize, imageSize, px * size, py * size, size, size);
 		}
 	}
 	
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'middle';
-	ctx.font = '500 12px IBM Plex Mono';
+	ctx.font = '500 ' + (size / 5) + 'px IBM Plex Mono';
 
 	for (let x = 0; x < 8; x++) {
 		px = playerColor === 0 ? 7 - x : x;
 		if(x % 2 !== playerColor) {
-			ctx.fillStyle = '#6AB5FF';
-		} else {
 			ctx.fillStyle = 'white';
+		} else {
+			ctx.fillStyle = '#6AB5FF';
 		}
 		
-		ctx.fillText(letters[x], (px+1) * size - 7, 8 * size - 7);
+		ctx.fillText(letters[x], (px+1-0.12) * size, 7.88 * size);
 	}
 	for (let y = 0; y < 8; y++) {
 		py = playerColor === 0 ? 7 - y : y;
 		if(y % 2 !== playerColor) {
-			ctx.fillStyle = 'white';
-		} else {
 			ctx.fillStyle = '#6AB5FF';
+		} else {
+			ctx.fillStyle = 'white';
 		}
 		
-		ctx.fillText(8-y, 6, py * size + 10);
+		ctx.fillText(8-y, 0.11 * size, (py+0.15) * size);
+	}
+
+	for (let x = 0; x < 8; x++) {
+		for (let y = 0; y < 8; y++) {
+			px = playerColor === 0 ? 7 - x : x;
+			py = playerColor === 0 ? 7 - y : y;
+
+			let p = board.pieceAtPos(x + y * 8);
+
+			ctx.drawImage(piecesImg, numbersToSprite[p[1]] * imageSize, p[2] * imageSize, imageSize, imageSize, (px+0.02) * size, (py+0.02) * size, 0.96*size, 0.96*size);
+		}
 	}
 }
 
-function updateScore() {
+async function afterMove() {
 	score = board.eval();
 	notation = board.getNotation();
+
+	let gameOver0 = board.gameOver(0);
+	let gameOver1 = board.gameOver(1);
+
+	if(gameOver0 === 1) {
+		gameOver = true;
+		checkmateColor = 0;
+	} else if(gameOver1 === 1) {
+		gameOver = true;
+		checkmateColor = 1;
+	} else if(gameOver0 === -1) {
+		gameOver = true;
+		draw = true;
+	}
+
+	if(board.inCheck(0)) {
+		checkIndex = board.findPiece(KING, 0)[0];
+	} else if (board.inCheck(1)) {
+		checkIndex = board.findPiece(KING, 1)[0];
+	} else {
+		checkIndex = -1;
+	}
+	
+	await tick();
+
+	notationScroll.scrollBy(0, 1000);
 }
 
 function evalPieceMoves() {
@@ -281,7 +442,7 @@ function evalPieceMoves() {
 }
 
 async function possiblyMoveComputer() {
-	if(board.turn === +!playerColor) {
+	if(board.turn === +!playerColor && !gameOver) {
 		drawBoard();
 		loading = true;
 
@@ -290,7 +451,7 @@ async function possiblyMoveComputer() {
 		setTimeout(() => {
 			board = computerMoveBoard(board, 4);
 
-			updateScore();
+			afterMove();
 
 			loading = false;
 
@@ -307,8 +468,24 @@ function startAs(color) {
 	createLightBlue();
 }
 
+function restart() {
+	gameStarted = false;
+	showComputerStuff = false;
+	loading = false;
+	gameOver = false;
+
+	highlightedIndex = -1;
+}
+
 async function createLightBlue() {
 	gameStarted = true;
+
+	board = new Board();
+	board.importString(startingPosition);
+	board.eval();
+
+	score = 0;
+	notation = [];
 
 	await tick();
 
