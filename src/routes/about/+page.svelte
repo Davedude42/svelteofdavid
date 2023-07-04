@@ -95,10 +95,43 @@
 	object-fit: cover;
 	object-position: center;
 }
+
+.david-title-wrapper {
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+
+	box-sizing: content-box;
+
+	@apply h-12 py-4;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1272px) {
+	.david-title-wrapper {
+		align-self: start;
+		padding-left: 510px;
+	}
+}
+
+.david-title {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+
+	min-width: 192px;
+	border: 4px solid black;
+
+	background-color: white;
+
+	box-sizing: content-box;
+
+	@apply px-4 text-2xl font-IBMPlexMono font-medium;
+}
 </style>
 <div class="relative flex-grow flex flex-col items-center">
-	<div class="flex flex-row items-stretch h-12 p-4 box-content">
-		<div class="flex flex-row items-center justify-center px-4 min-w-[192px] thick-black-border bg-white text-2xl font-IBMPlexMono font-medium box-content">
+	<div class="david-title-wrapper">
+		<div class="david-title">
 			About
 		</div>
 	</div>
@@ -106,9 +139,9 @@
 		<div class="meee-image thick-black-border comic-shadow bg-white p-4">
 			<img src={mee} class="w-full h-full" alt="meeeee" />
 		</div>
-		<div class="meee-description p-4 thick-black-border comic-shadow bg-lighter font-medium">
-			<h3 class="pb-4 text-lg font-IBMPlexMono">I'm <span class="bg-white">David Haroldsen</span></h3>
-			<p class="">
+		<div class="meee-description p-4 thick-black-border comic-shadow bg-secondary font-medium">
+			<h3 class="pb-4 text-lg font-semibold font-IBMPlexMono">I'm <span class="bg-white">David Haroldsen</span></h3>
+			<p class="font-semibold">
 				I'm going to be a Senior in High School, and as you can tell, I program.
 			</p>
 		</div>
@@ -121,13 +154,13 @@
 					<i class="fa-solid fa-person-hiking pr-3"></i><i class="fa-solid fa-mountain"></i>
 				</div>
 			</h3>
-			<p class="py-2">
+			<p class="py-2 font-semibold">
 				I started programming way back in 5th grade. I got this website as a Christmas gift two years later in 2018; it's been a pretty good gift.
 			</p>
-			<p class="py-2">
+			<p class="py-2 font-semibold">
 				Now, I've been working for a small tech company doing their front-end development for about two years.
 			</p>
-			<p class="py-2">
+			<p class="py-2 font-semibold">
 				On my own, I have gotten to work with a few languages and technologies, including... 
 			</p>
 			<ul class="mt-2 p-4 thick-black-border bg-white font-IBMPlexMono font-medium">
@@ -153,18 +186,27 @@
 			<h3 class="pb-2 text-2xl font-IBMPlexMono font-medium">
 				More about me
 			</h3>
-			<p class="py-2">
+			<p class="py-2 font-semibold">
 				I do some things other than programming too every once in a while. Here is an interactive slideshow of other things I do:
 			</p>
 			<div class="scene" bind:this={sceneEl}>
 				<div class="carousel" bind:this={carouselEl}>
 					<div class="carousel-cell">
 						<div class="flex-grow relative overflow-hidden">
-							<img src={scouts} alt="big ol rubik's cube">
+							<img src={scouts} alt="boy scouts shirt">
 						</div>
 						<div class="p-4 border-t-4 border-black">
 							<p class="pb-1 font-bold">Boy Scouts</p>
 							<p class="text-sm">I am more outdoorsy than the average person.</p>
+						</div>
+					</div>
+					<div class="carousel-cell">
+						<div class="flex-grow relative overflow-hidden">
+							<img src={mads} alt="singers">
+						</div>
+						<div class="p-4 border-t-4 border-black">
+							<p class="pb-1 font-bold">Madrigals</p>
+							<p class="text-sm">I really enjoy singing, even if I am a bass.</p>
 						</div>
 					</div>
 					<div class="carousel-cell">
@@ -178,29 +220,11 @@
 					</div>
 					<div class="carousel-cell">
 						<div class="flex-grow relative overflow-hidden">
-							<img src={catan} alt="big ol rubik's cube">
+							<img src={catan} alt="amazing scholastic bowlers">
 						</div>
 						<div class="p-4 border-t-4 border-black">
-							<p class="pb-1 font-bold">3d Printed Catan</p>
-							<p class="text-sm">Hey, we should play sometime</p>
-						</div>
-					</div>
-					<div class="carousel-cell">
-						<div class="flex-grow relative overflow-hidden">
-							<img src={catan} alt="big ol rubik's cube">
-						</div>
-						<div class="p-4 border-t-4 border-black">
-							<p class="pb-1 font-bold">3d Printed Catan</p>
-							<p class="text-sm">Hey, we should play sometime</p>
-						</div>
-					</div>
-					<div class="carousel-cell">
-						<div class="flex-grow relative overflow-hidden">
-							<img src={catan} alt="big ol rubik's cube">
-						</div>
-						<div class="p-4 border-t-4 border-black">
-							<p class="pb-1 font-bold">3d Printed Catan</p>
-							<p class="text-sm">Hey, we should play sometime</p>
+							<p class="pb-1 font-bold">Scholastic Bowl</p>
+							<p class="text-sm">Our team went to NAQT Nationals the last two years.</p>
 						</div>
 					</div>
 				</div>
@@ -222,6 +246,7 @@ import mee from '$lib/assets/imgs/mee.jpg';
 import rubikscube from '$lib/assets/imgs/about/rubikscube.jpg';
 import catan from '$lib/assets/imgs/about/catan.jpg';
 import scouts from '$lib/assets/imgs/about/scouts.jpg';
+import mads from '$lib/assets/imgs/about/mads.jpg';
 
 let sceneEl;
 let carouselEl;
@@ -251,23 +276,25 @@ function recreateCarousel() {
 
 		kiddies[i].style.transform = `rotateY(${theta * i}deg) translateZ(${depth}px)`;
 
-		/*let nearestYouCouldCallIt = selectedCell;
-		if(selectedCell < i) {
-			while(Math.abs(nearestYouCouldCallIt - i) > kiddies.length / 2) nearestYouCouldCallIt += kiddies.length;
-		}
-		if(selectedCell > i) {
-			while(Math.abs(nearestYouCouldCallIt - i) > kiddies.length / 2) nearestYouCouldCallIt -= kiddies.length;
-		}
+		let correctedSelectedCell = selectedCell;
 
-		if(Math.abs(nearestYouCouldCallIt - i) <= 1) {
+		while(correctedSelectedCell < 0) correctedSelectedCell += kiddies.length;
+		while(correctedSelectedCell >= kiddies.length) correctedSelectedCell -= kiddies.length;
+
+		if(correctedSelectedCell == i) {
 			kiddies[i].style.opacity = 1;
 		} else {
 			kiddies[i].style.opacity = 0;
-		}*/
+		}
 	}
 
 	carouselEl.style.transform = `translateZ(-${depth}px) rotateY(${-theta * selectedCell}deg)`;
-	setTimeout(() => carouselEl.style.transition = 'transform 0.5s', 100);
+	setTimeout(() => {
+		carouselEl.style.transition = 'transform 0.5s';
+		for (let i = 0; i < kiddies.length; i++) {
+			kiddies[i].style.transition = 'opacity 0.5s';
+		}
+	}, 100);
 }
 
 function prevSlide() {

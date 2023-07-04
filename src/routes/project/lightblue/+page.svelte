@@ -1,4 +1,5 @@
 <style>
+
 .lightblue-grid {
 	flex-shrink: 0;
 	display: grid;
@@ -7,9 +8,15 @@
 	justify-content: center;
 	gap: 24px;
 
-	width: 440px;
+	width: 100%;
 
 	padding: 32px;
+}
+
+@media (min-width: 500px) {
+	.lightblue-grid {
+		width: 440px;
+	}
 }
 
 .lightblue-grid > div {
@@ -30,7 +37,7 @@
 </style>
 <svelte:window on:resize={() => { resizeBoard(); drawBoard(); }} />
 <div class:hidden={!pgnPopupOpen} class="fixed z-40 inset-0 flex flex-col items-center justify-center bg-black/40">
-	<div style="width: 500px; height: 400px;" class="thick-black-border flex flex-col gap-4 p-4 bg-lighter">
+	<div style="width: 500px; height: 400px; max-width: 90%;" class="thick-black-border flex flex-col gap-4 p-4 bg-lighter">
 		<div class="flex flex-row justify-between">
 			<button class="outlandish-button thick-black-border p-1 bg-white font-semibold" style="width: 150px;" on:click={copyPGN}>
 				Copy
@@ -44,9 +51,9 @@
 		</div>
 	</div>
 </div>
-<div class="flex-grow flex flex-col md:flex-row justify-evenly bg-neutral-700" style="padding-top: 80px">
+<div class="flex-grow flex flex-col md:flex-row justify-evenly md:max-h-screen bg-neutral-700 overflow-hidden" style="padding-top: 80px">
 	{#if gameStarted}
-		<div class="flex-grow lg:flex-grow-0 flex-shrink flex flex-row items-center justify-center max-w-full max-h-full p-8 overflow-hidden" bind:this={wrapper}>
+		<div class="flex-grow lg:flex-grow-0 flex-shrink flex flex-row items-center justify-center max-w-full max-h-full px-8 overflow-hidden" bind:this={wrapper}>
 			<canvas class="box-content thick-black-border select-none" bind:this={canvas} on:mousedown={mouseDown}></canvas>
 		</div>
 	{/if}

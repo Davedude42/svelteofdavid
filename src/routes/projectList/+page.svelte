@@ -24,10 +24,45 @@
 .project-item img {
 	height: 8rem;
 }
+
+
+.david-title-wrapper {
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+	align-self: center;
+
+	box-sizing: content-box;
+
+	@apply h-12 py-4;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1272px) {
+	.david-title-wrapper {
+		align-self: start;
+		padding-left: 510px;
+	}
+}
+
+.david-title {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+
+	min-width: 192px;
+	border: 4px solid black;
+
+	background-color: white;
+
+	box-sizing: content-box;
+
+	@apply px-4 text-2xl font-IBMPlexMono font-medium;
+}
 </style>
 <div class="relative flex-grow flex flex-col items-stretch">
-	<div class="flex flex-row items-stretch justify-center h-12 p-4 box-content">
-		<div class="flex flex-row items-center justify-center px-4 min-w-[192px] thick-black-border bg-white text-2xl font-IBMPlexMono font-medium box-content">
+	<div class="david-title-wrapper">
+		<div class="david-title">
 			Projects
 		</div>
 	</div>
