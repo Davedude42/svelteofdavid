@@ -5,7 +5,7 @@ module.exports = {
     extend: {
       fontFamily: {
         Mulish: ['Mulish', 'sans-serif'],
-        IBMPlexMono: ['IBM Plex Mono', 'sans-serif'],
+        IBMPlexMono: ['IBM Plex Mono', 'monospace'],
       },
       colors: {
         primary: '#1E90FF',

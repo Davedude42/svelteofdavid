@@ -31,7 +31,7 @@ export class Chunk {
 	generate() {
 		for (let x = 0; x < 16; x++) {
 			for (let z = 0; z < 16; z++) {
-				let grassHeight = 64 + Math.floor(Math.random() * 6 - 3);
+				let grassHeight = 64 + x % 2;
 				for (let y = 0; y < 256; y++) {
 					if(y == grassHeight) {
 						this.setVoxel(1, x, y, z);

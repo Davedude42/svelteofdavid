@@ -1,4 +1,53 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Mulish:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url('/fonts/IBM_Plex_Mono/IBMPlexMono-Light.ttf');
+	font-weight: 300;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url('/fonts/IBM_Plex_Mono/IBMPlexMono-Regular.ttf');
+	font-weight: 400;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url('/fonts/IBM_Plex_Mono/IBMPlexMono-Medium.ttf');
+	font-weight: 500;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url('/fonts/IBM_Plex_Mono/IBMPlexMono-SemiBold.ttf');
+	font-weight: 600;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url('/fonts/IBM_Plex_Mono/IBMPlexMono-Bold.ttf');
+	font-weight: 700;
+}
+@font-face {
+  font-family: "Mulish";
+  src: url('/fonts/Mulish/static/Mulish-Light.ttf');
+	font-weight: 300;
+}
+@font-face {
+  font-family: "Mulish";
+  src: url('/fonts/Mulish/static/Mulish-Regular.ttf');
+	font-weight: 400;
+}
+@font-face {
+  font-family: "Mulish";
+  src: url('/fonts/Mulish/static/Mulish-Medium.ttf');
+	font-weight: 500;
+}
+@font-face {
+  font-family: "Mulish";
+  src: url('/fonts/Mulish/static/Mulish-SemiBold.ttf');
+	font-weight: 600;
+}
+@font-face {
+  font-family: "Mulish";
+  src: url('/fonts/Mulish/static/Mulish-Bold.ttf');
+	font-weight: 700;
+}
 
 :root {
 	font-family: Mulish, sans-serif;

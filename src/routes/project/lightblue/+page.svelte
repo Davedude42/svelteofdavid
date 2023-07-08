@@ -25,6 +25,22 @@
 	border: 4px solid black;
 }
 
+.lightblue-face {
+	width: auto;
+	height: 100%;
+	@apply px-4 py-2;
+
+	user-select: none;
+}
+.lightblue-message {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	@apply px-4 font-IBMPlexMono font-medium;
+}
+
 .outlandish-button {
 	box-shadow: 4px 4px black;
 }
@@ -39,9 +55,9 @@
 <div class:hidden={!pgnPopupOpen} class="fixed z-40 inset-0 flex flex-col items-center justify-center bg-black/40">
 	<div style="width: 500px; height: 400px; max-width: 90%;" class="thick-black-border flex flex-col gap-4 p-4 bg-lighter">
 		<div class="flex flex-row justify-between">
-			<button class="outlandish-button thick-black-border p-1 bg-white font-semibold" style="width: 150px;" on:click={copyPGN}>
+			<OutlandishButton elementStyle="width: 150px; padding: 4px;" on:click={copyPGN}>
 				Copy
-			</button>
+			</OutlandishButton>
 			<button class="thick-black-border p-1 bg-red-500 hover:bg-red-400 active:bg-red-300 font-semibold" style="width: 40px; height: 40px;" on:click={() => pgnPopupOpen = false}>
 				<i class="fa-solid fa-xmark"></i>
 			</button>
@@ -59,23 +75,23 @@
 	{/if}
 	<div class="lightblue-grid self-center md:self-stretch">
 		<div class="flex flex-row justify-between">
-			<img src={ thinking } alt="current state of bot" class="px-4 py-2 select-none" class:hidden={!(loading)} />
-			<img src={ welcome } alt="current state of bot" class="px-4 py-2 select-none" class:hidden={!(!loading && !showComputerStuff)} />
-			<img src={ done } alt="current state of bot" class="px-4 py-2 select-none" class:hidden={!(!loading && showComputerStuff)} />
+			<img src={ thinking } alt="current state of bot" class="lightblue-face" class:hidden={!(loading)} />
+			<img src={ welcome } alt="current state of bot" class="lightblue-face" class:hidden={!(!loading && !showComputerStuff)} />
+			<img src={ done } alt="current state of bot" class="lightblue-face" class:hidden={!(!loading && showComputerStuff)} />
 			{#if gameStarted}
 				{#if showComputerStuff}
-					<div class="flex flex-col items-end justify-center px-4 font-IBMPlexMono font-medium">
+					<div class="lightblue-message items-end">
 						<p class="font-bold">{ (board.metaData.time / 1000)?.toFixed(2) } seconds</p>
 						<p>{ board.metaData.nodes } nodes</p>
 						<p>{ (board.metaData.time / board.metaData.nodes)?.toFixed(2) }ms per node</p>
 					</div>
 				{:else if !loading}
-					<div class="flex-grow flex flex-col justify-center px-4 font-IBMPlexMono font-medium text-center">
+					<div class="lightblue-message items-center text-center">
 						Start us off.
 					</div>
 				{/if}
 			{:else}
-				<div class="flex-grow flex flex-col justify-center px-4 font-IBMPlexMono font-semibold text-center">
+				<div class="lightblue-message items-center text-center">
 					Light Blue welcomes you.
 				</div>
 			{/if}
@@ -93,12 +109,12 @@
 						</div>
 					{/if}
 					<div class="flex-grow"></div>
-					<button class="outlandish-button thick-black-border p-2 bg-white font-semibold" on:click={openPGN}>
+					<OutlandishButton on:click={openPGN}>
 						Copy Notation
-					</button>
-					<button class="outlandish-button thick-black-border p-2 bg-white font-semibold" on:click={restart}>
+					</OutlandishButton>
+					<OutlandishButton on:click={restart}>
 						Leave Game
-					</button>
+					</OutlandishButton>
 				</div>
 				<div class="grid grid-cols-2 gap-y-2 p-2 content-start items-start justify-items-start font-IBMPlexMono overflow-y-scroll" bind:this={notationScroll}>
 					{#each notation as note}
@@ -110,8 +126,8 @@
 			</div>
 		{:else}
 			<div class="flex flex-col p-8 gap-6 align-stretch">
-				<button class="outlandish-button thick-black-border p-2 bg-white text-lg font-semibold" on:click={() => startAs(1)}>Start as white</button>
-				<button class="outlandish-button thick-black-border p-2 bg-black text-lg font-semibold text-white" on:click={() => startAs(0)}>Start as black</button>
+				<OutlandishButton elementClass="text-lg" on:click={() => startAs(1)}>Start as white</OutlandishButton>
+				<OutlandishButton elementClass="text-lg !bg-black text-white hover:text-lighter" on:click={() => startAs(0)}>Start as black</OutlandishButton>
 			</div>
 		{/if}
 		{#if gameStarted}
@@ -128,6 +144,8 @@
 </div>
 <script>
 import { onMount, tick } from 'svelte';
+
+import OutlandishButton from '$lib/components/OutlandishButton.svelte';
 
 import { Board } from '$lib/lightblue/board.ts';
 import { KING, startingPosition, letters } from '$lib/lightblue/constants.ts';

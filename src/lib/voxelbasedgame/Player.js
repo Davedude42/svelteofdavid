@@ -9,32 +9,33 @@ export class Player extends Entity {
 		this.gravity = true;
 	}
 	flatMovement(time, keyMap) {
-		let flatVelocity = new Vector3(0, 0, 0);
+		let flatAcceleration = new Vector3(0, 0, 0);
 
 		if(keyMap.KeyW > 0) {
-			flatVelocity.add(new Vector3(Math.sin(-this.euler.y), 0, -Math.cos(-this.euler.y)));
+			flatAcceleration.add(new Vector3(Math.sin(-this.euler.y), 0, -Math.cos(-this.euler.y)));
 		}
 		if(keyMap.KeyS > 0) {
-			flatVelocity.add(new Vector3(-Math.sin(-this.euler.y), 0, Math.cos(-this.euler.y)));
+			flatAcceleration.add(new Vector3(-Math.sin(-this.euler.y), 0, Math.cos(-this.euler.y)));
 		}
 		if(keyMap.KeyA > 0) {
-			flatVelocity.add(new Vector3(-Math.cos(-this.euler.y), 0, -Math.sin(-this.euler.y)));
+			flatAcceleration.add(new Vector3(-Math.cos(-this.euler.y), 0, -Math.sin(-this.euler.y)));
 		}
 		if(keyMap.KeyD > 0) {
-			flatVelocity.add(new Vector3(Math.cos(-this.euler.y), 0, Math.sin(-this.euler.y)));
+			flatAcceleration.add(new Vector3(Math.cos(-this.euler.y), 0, Math.sin(-this.euler.y)));
 		}
 
-		flatVelocity.normalize().multiplyScalar(PLAYER_ACCELERATION * time);
+		// cap at player acceleration
+		flatAcceleration.normalize().multiplyScalar(PLAYER_ACCELERATION * time);
 
 		let vy = this.velocity.y;
 
 		this.velocity.y = 0;
 
-		this.velocity.clampScalar(-PLAYER_SPEED, PLAYER_SPEED);
-
 		let scalar = this.velocity.length();
-		this.velocity.normalize().multiplyScalar(Math.max(0, scalar - PLAYER_FRICTION * time));
-		this.velocity.add(flatVelocity);
+		this.velocity.normalize().multiplyScalar(Math.max(0, scalar - PLAYER_FRICTION * time)); // friction
+		this.velocity.add(flatAcceleration);
+
+		this.velocity.clampLength(-PLAYER_SPEED, PLAYER_SPEED);
 
 		this.velocity.y = vy;
 	}

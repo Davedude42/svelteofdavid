@@ -78,7 +78,7 @@
 			<div class="text-lg">Who knew computers could be good at chess?</div>
 		</a>
 		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/ledlights">
-			<img src={lightblueImage} alt="Light Emitting Diodes" class="row-span-2 thick-black-border" />
+			<img src={ledlightsImage} alt="Light Emitting Diodes" class="row-span-2 thick-black-border" />
 			<div class="font-IBMPlexMono text-2xl">LED Lights</div>
 			<div class="text-lg">My strip of Light Emitting Diodes</div>
 		</a>
@@ -151,4 +151,5 @@
 <script>
 import vbgImage from '$lib/assets/imgs/projects/voxelbasedgame.jpg';
 import lightblueImage from '$lib/assets/imgs/projects/lightblue.jpg';
+import ledlightsImage from '$lib/assets/imgs/projects/ledlights.jpg';
 </script>

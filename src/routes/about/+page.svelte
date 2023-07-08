@@ -139,7 +139,7 @@
 		<div class="meee-image thick-black-border comic-shadow bg-white p-4">
 			<img src={mee} class="w-full h-full" alt="meeeee" />
 		</div>
-		<div class="meee-description p-4 thick-black-border comic-shadow bg-secondary font-medium">
+		<div class="meee-description p-4 thick-black-border comic-shadow bg-secondary">
 			<h3 class="pb-4 text-lg font-semibold font-IBMPlexMono">I'm <span class="bg-white">David Haroldsen</span></h3>
 			<p class="font-semibold">
 				I'm going to be a Senior in High School, and as you can tell, I program.
