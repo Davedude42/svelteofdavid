@@ -8,7 +8,7 @@ export class Player extends Entity {
 
 		this.gravity = true;
 	}
-	flatMovement(time, keyMap) {
+	playerVelocityChange(time, keyMap) {
 		let flatAcceleration = new Vector3(0, 0, 0);
 
 		if(keyMap.KeyW > 0) {
@@ -33,6 +33,7 @@ export class Player extends Entity {
 
 		let scalar = this.velocity.length();
 		this.velocity.normalize().multiplyScalar(Math.max(0, scalar - PLAYER_FRICTION * time)); // friction
+
 		this.velocity.add(flatAcceleration);
 
 		this.velocity.clampLength(-PLAYER_SPEED, PLAYER_SPEED);
@@ -40,17 +41,17 @@ export class Player extends Entity {
 		this.velocity.y = vy;
 	}
 	step(time, keyMap) {
-		this.fall(time);
 		
-		if(keyMap.Space === 1) {
+		if(keyMap.Space === 1 && this.isGrounded) {
 			this.velocity.y = JUMP_SPEED;
 		}
 
-		this.flatMovement(time, keyMap);
+		this.playerVelocityChange(time, keyMap);
 		
-		this.addVelocity(time);
-		this.fallDistance += this.velocity.y * time;
+		this.fall(time / 2); // one half before and one half after
 
-		this.pushUp();
+		this.addVelocityAndSlide(time);
+		
+		this.fall(time / 2);
 	}
 }

@@ -105,13 +105,12 @@ function step() {
 
 	let angleX = game.player.euler.x / Math.PI * 180;
 	let angleY = game.player.euler.y / Math.PI * 180;
-
-	let velAngle = Math.atan2(-game.player.velocity.x, -game.player.velocity.z) / Math.PI * 180;
 	
 	console = `
 	${ (1/(frameSpeed/1000)).toFixed(0) } FPS
 	${ game.player.position.x.toFixed(2) } ${ game.player.position.y.toFixed(2) } ${ game.player.position.z.toFixed(2) }
-	${ velAngle.toFixed(1) }
+	${ game.player.velocity.x.toFixed(2) } ${ game.player.velocity.y.toFixed(2) } ${ game.player.velocity.z.toFixed(2) }
+	${ game.player.isGrounded ? 'grounded' : 'falling' }
 	${ angleX.toFixed(1) } ${ angleY.toFixed(1) }
 	`.trim();
 

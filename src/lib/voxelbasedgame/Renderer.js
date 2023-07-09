@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { CAMERA_HEIGHT } from './Constants.js';
+import { CAMERA_HEIGHT, PLAYER_RADIUS } from './Constants.js';
 
 import textureMap from '$lib/voxelbasedgame/texturemap.png';
 
@@ -90,6 +90,7 @@ export class Renderer {
 	material;
 
 	axesHelper;
+	playerRadiusHelper;
 
 	meshes;
 
@@ -113,7 +114,14 @@ export class Renderer {
 		
 		this.axesHelper = new THREE.AxesHelper( 1 );
 		this.axesHelper.position.set(0, 90, 0);
-		this.scene.add( this.axesHelper );
+		this.scene.add(this.axesHelper);
+
+		const geometry = new THREE.CircleGeometry(PLAYER_RADIUS, 32); 
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 }); 
+		this.playerRadiusHelper = new THREE.Mesh(geometry, material); 
+		this.playerRadiusHelper.position.set(0, 90, 0);
+		this.playerRadiusHelper.rotateX(-Math.PI/2);
+		this.scene.add(this.playerRadiusHelper);
 
 		this.loader = new THREE.TextureLoader();
 
@@ -220,6 +228,9 @@ export class Renderer {
 	frame() {
 		this.camera.position.copy(this.game.player.position);
 		this.camera.position.y += CAMERA_HEIGHT;
+
+		this.playerRadiusHelper.position.copy(this.game.player.position);
+		this.playerRadiusHelper.position.y += 0.05;
 
 		this.camera.quaternion.setFromEuler(this.game.player.euler);
 	

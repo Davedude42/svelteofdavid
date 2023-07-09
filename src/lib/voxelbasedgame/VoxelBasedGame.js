@@ -15,7 +15,7 @@ export class VoxelBasedGame {
 		this.chunks = {};
 		this.renderChunk = (cx, xz) => {}
 
-		this.player = new Player(this, new THREE.Vector3(0, 95, 0));
+		this.player = new Player(this, new THREE.Vector3(0.5, 95, 0.5));
 	}
 	getChunk(cx, cz) {
 		return this.chunks[toChunkId(cx, cz)];
