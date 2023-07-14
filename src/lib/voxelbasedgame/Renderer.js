@@ -147,6 +147,8 @@ export class Renderer {
 		for (let i = 0; i < dirLights.length; i++) {
 			this.scene.add(dirLights[i]);
 		}
+
+		this.scene.fog = new THREE.Fog(new THREE.Color('lightblue'), (this.game.renderDistance - 2) * 16, this.game.renderDistance * 16 );
 	}
 	renderChunk(cx, cz) {
 
@@ -173,10 +175,10 @@ export class Renderer {
 						continue;
 					const uvVoxel = voxel - 1;
 					for (const {dir, corners, uvRow} of faces) {
-						let neighbor = chunk.getVoxel(
-							x + dir[0],
-							y + dir[1],
-							z + dir[2]);
+						let neighbor = this.game.getVoxel(
+							absX + dir[0],
+							   y + dir[1],
+							absZ + dir[2]);
 						
 						if(neighbor <= 0) {
 							const ndx = positions.length / 3;

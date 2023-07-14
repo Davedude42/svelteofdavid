@@ -206,7 +206,7 @@
 						</div>
 						<div class="p-4 border-t-4 border-black">
 							<p class="pb-1 font-bold">Madrigals</p>
-							<p class="text-sm">I really enjoy singing, even if I am a bass.</p>
+							<p class="text-sm">I really enjoy singing, even though I'm a bass.</p>
 						</div>
 					</div>
 					<div class="carousel-cell">
@@ -220,7 +220,7 @@
 					</div>
 					<div class="carousel-cell">
 						<div class="flex-grow relative overflow-hidden">
-							<img src={catan} alt="amazing scholastic bowlers">
+							<img src={schobo} alt="amazing scholastic bowlers">
 						</div>
 						<div class="p-4 border-t-4 border-black">
 							<p class="pb-1 font-bold">Scholastic Bowl</p>
@@ -240,13 +240,13 @@
 	on:resize={recreateCarousel}
 />
 <script>
-import { onMount } from 'svelte';
+import { onDestroy, onMount } from 'svelte';
 
 import mee from '$lib/assets/imgs/mee.jpg';
 import rubikscube from '$lib/assets/imgs/about/rubikscube.jpg';
-import catan from '$lib/assets/imgs/about/catan.jpg';
 import scouts from '$lib/assets/imgs/about/scouts.jpg';
 import mads from '$lib/assets/imgs/about/mads.jpg';
+import schobo from '$lib/assets/imgs/about/naqt.jpg';
 
 let sceneEl;
 let carouselEl;
@@ -298,15 +298,33 @@ function recreateCarousel() {
 }
 
 function prevSlide() {
+	clearInterval(int);
+
 	selectedCell--;
 
 	recreateCarousel();
 }
 function nextSlide() {
+	clearInterval(int);
+
 	selectedCell++;
 
 	recreateCarousel();
 }
 
-onMount(recreateCarousel);
+let int;
+
+onMount(() => {
+	int = setInterval(() => {
+		selectedCell++;
+
+		recreateCarousel();
+	}, 10000);
+
+	recreateCarousel();
+});
+
+onDestroy(() => {
+	clearInterval(int);
+})
 </script>

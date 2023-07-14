@@ -7,6 +7,11 @@ export class Player extends Entity {
 		super(game, position);
 
 		this.gravity = true;
+
+		this.emitChangeChunk = () => {}
+	}
+	onChangeChunk(callback) {
+		this.emitChangeChunk = function () { callback(); };
 	}
 	playerVelocityChange(time, keyMap) {
 		let flatAcceleration = new Vector3(0, 0, 0);
@@ -50,7 +55,17 @@ export class Player extends Entity {
 		
 		this.fall(time / 2); // one half before and one half after
 
+		let oldcx = Math.floor(this.position.x / 16);
+		let oldcz = Math.floor(this.position.z / 16);
+
 		this.addVelocityAndSlide(time);
+		
+		let newcx = Math.floor(this.position.x / 16);
+		let newcz = Math.floor(this.position.z / 16);
+
+		if(oldcx != newcx || oldcz != newcz) {
+			this.emitChangeChunk();
+		}
 		
 		this.fall(time / 2);
 	}

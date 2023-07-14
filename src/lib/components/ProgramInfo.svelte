@@ -1,52 +1,44 @@
 <style>
 .program-info {
 	position: fixed;
-	top: 8px;
-	right: 8px;
+	top: 1rem;
+	right: 1rem;
 
-	border-radius: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+
+	background-color: white;
 
 	transition: width 0.5s, height 0.5s;
-}
-.program-info > div {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-}
-.program-info > div::-webkit-scrollbar {
-  width: 4px;
-	border-radius: 2px;
-}
 
-/* Track */
-.program-info > div::-webkit-scrollbar-track {
-  background: rgb(255 255 255 / 0.4);
-	border-radius: 2px;
+	overflow: hidden;
+	cursor: pointer;
 }
-
-/* Handle */
-.program-info > div::-webkit-scrollbar-thumb {
-  background: rgb(0 0 0 / 0.3);
-	border-radius: 2px;
+.program-info:hover {
+	@apply bg-gray-100;
 }
 
 .program-info.open {
-	width: 240px;
-	height: 260px;
+	width: 16rem;
+	height: 14rem;
 }
+
 .program-info.closed {
-	width: 40px;
-	height: 40px;
+	width: 3rem;
+	height: 3rem;
 }
+
+
 </style>
-<div class={`program-info bg-gray-500/60 hover:bg-gray-500/70 overflow-hidden cursor-pointer ${visible ? 'open' : 'closed'}`} on:click={toggleOpen} on:keypress={toggleOpen}>
+<div class={`thick-black-border program-info ${visible ? 'open' : 'closed'}`} on:click={toggleOpen} on:keypress={toggleOpen}>
 	{#if visible}
-		<div class="p-2 break-words overflow-y-auto" style="width: 236px; height: 260px;" transition:fade>
+		<div class="p-2 break-words overflow-y-auto" style="width: 15.5rem; height: 13.5rem;" in:fade={{ delay: 250, duration: 250 }} out:fade={{ duration: 250 }}>
 			<slot />
 		</div>
 	{:else}
-		<div class="flex flex-row items-center justify-center" style="width: 40px; height: 40px;" transition:fade>
-			?
+		<div class="artificially-center" in:fade={{ delay: 250, duration: 250 }} out:fade={{ duration: 250 }}>
+			<i class="fa-solid fa-question"></i>
 		</div>
 	{/if}
 </div>

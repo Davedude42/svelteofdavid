@@ -67,7 +67,7 @@
 	<a class="hover:underline cursor-pointer" href="/about">About</a>
 	<a class="hover:underline cursor-pointer" href="/projectList">Projects</a>
 </nav>
-<div class="top-nav sm-nav nav-button thick-black-border" class:popoverOpen on:click={togglePopover}>
+<div class="top-nav sm-nav nav-button thick-black-border" class:popoverOpen on:click={togglePopover} on:keypress={emptyFunction}>
 	{#if !popoverOpen}
 		<i class="fa-solid fa-bars nav-button"></i>
 	{:else}
@@ -95,6 +95,8 @@
 	let popoverOpen = false;
 
 	let popoverButton;
+
+	function emptyFunction () {}
 
 	function togglePopover() {
 		popoverOpen = !popoverOpen;

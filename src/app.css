@@ -71,6 +71,15 @@
 	box-shadow: 6px 6px black;
 }
 
+.artificially-center {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -1,0 +1,687 @@
+<style>* {user-select: none;}</style>
+<link rel="stylesheet" href="../fromLOD.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<div class="fixed right-4 top-4 text-white" id="before">Wait a sec...</div>
+<div class="fixed right-4 text-white text-right" id="after" style="display: none; top: 100px;">
+	<button style="text-decoration: underline;" title="If you don't save the world, only chunks that have been unloaded will be saved" id="saveButton">Save whole world in storage</button>
+</div>
+<button style="z-index: 1000; position: fixed; left: 10px; bottom: 10px; background-color: #00000044; color: white; width: 100px; height: 100px;" id="breakBlock">Break</button>
+<button style="z-index: 1000; position: fixed; right: 10px; bottom: 10px; background-color: #00000044; color: white; width: 100px; height: 100px;" id="placeBlock">Place</button>
+<div style="z-index: 1000; position: fixed; right: 10px; bottom: 10px; color: white; font-weight: bold;" id="message"></div>
+<canvas id="3d" style="user-select: none;"></canvas>
+<canvas id="overlay" style="z-index: 100; position: fixed; left:0; right:0; top:0; bottom:0; pointer-events: none;"></canvas>
+<script type="module">
+"use strict";
+import * as t from 'https://cdn.skypack.dev/three@0.131.3';
+import { OrbitControls } from 'https://cdn.skypack.dev/three@0.131.3/examples/jsm/controls/OrbitControls.js';
+import { Chunk } from './chunk.js';
+import { MindCraftInternals } from './internals.js';
+
+
+const neighborOffsets = [
+	[ 0,  0,  0], // self
+	[-1,  0,  0], // left
+	[ 1,  0,  0], // right
+	[ 0, -1,  0], // down
+	[ 0,  1,  0], // up
+	[ 0,  0, -1], // back
+	[ 0,  0,  1], // front
+];
+const raycaster = new t.Raycaster();
+const pointer = new t.Vector2();
+
+var overCanvas = document.getElementById('overlay');
+var overctx = overCanvas.getContext('2d');
+overCanvas.width = window.innerWidth;
+overCanvas.height = window.innerHeight;
+function n(n) {
+
+	return overCanvas.height*n/1000;
+}
+
+function makeMessage(m) {
+	document.getElementById('saveButton').blur();
+	document.getElementById('message').innerHTML = m;
+	setTimeout(function () {
+		document.getElementById('message').innerHTML = '';
+	}, 2000);
+}
+
+
+
+let chunks = {};
+
+let movement = {
+	w: false, d: false, a: false, s: false, shift: false, ' ': false, ArrowUp: false
+};
+let speed = 0.08;
+let sensitivity = 0.005;
+let jump = 0.135;
+let gravity = 0.007;
+let accel = 0.02;
+let decel = 0.8;
+let playerR = 0.2;
+let playerEyeline = 1.7;
+let playerHeight = 1.8;
+
+let euler = new t.Euler(0, 0, 0, 'YXZ');
+let delta = new t.Vector3(0, 0, 0);
+let pos = new t.Vector3(0, 90, 0);
+let lookingPosition = new t.Vector3(0, 0, 0);
+
+let loadDistance = 4;
+
+let hand = 2;
+
+let seed = localStorage.getItem('seed');
+if(seed === null) {
+	seed = Math.random();
+	localStorage.setItem('seed', seed);
+}
+
+let canvas = document.getElementById('3d');
+canvas.onclick = () => { canvas.requestPointerLock(); };
+let renderer = new t.WebGLRenderer({ canvas: canvas });
+renderer.setSize( window.innerWidth, window.innerHeight );
+
+
+document.getElementById('saveButton').onclick = () => { saveAllChunks(); makeMessage('Saved!'); };
+document.getElementById('placeBlock').ontouchstart = () => { placeVoxel(hand); };
+document.getElementById('breakBlock').ontouchstart = () => { placeVoxel(0); };
+
+let fov = 75;
+let aspect = (window.innerWidth) / window.innerHeight;
+let near = 0.001;
+let far = 1000;
+let camera = new t.PerspectiveCamera( fov, aspect, near, far );
+camera.position.set(0, 91.7, 0);
+let scene = new t.Scene();
+scene.background = new t.Color('lightblue');
+
+/*controls = new OrbitControls(camera, canvas);
+controls.target.set(0, 70, 0);
+controls.update();*/
+
+let oldTouchScreenX = -1;
+let oldTouchScreenY = -1;
+
+let dirLights = [];
+
+let onGround = false;
+
+
+let axesHelper = new t.AxesHelper( 1 );
+axesHelper.position.set(0, 90, 0);
+scene.add( axesHelper );
+
+let loader = new t.TextureLoader();
+let texture = loader.load('texturemap.png', function () {});
+texture.magFilter = t.NearestFilter;
+texture.minFilter = t.NearestFilter;
+
+let textureImage = new Image();
+textureImage.src = 'texturemap.png';
+
+let material = new t.MeshLambertMaterial({
+	map: texture,
+	alphaTest: 0.1,
+	transparent: true,
+});
+
+let selectedBlockLines;
+
+
+
+
+window.addEventListener('keydown', (e) => {
+	let key = e.key.toLowerCase();
+	if(movement.hasOwnProperty(key)) {
+		movement[key] = true;
+	}
+	if(key == ' ' && onGround == true) {
+		delta.y = jump;
+		onGround = false;
+	}
+	if(!isNaN(key) && +key != 0) {
+		hand = +key;
+	}
+});
+window.addEventListener('keyup', (e) => {
+	let key = e.key.toLowerCase();
+	if(movement.hasOwnProperty(key)) {
+		movement[key] = false;
+	}
+});
+canvas.addEventListener('mousemove', (e) => {
+	const movementX = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
+	const movementY = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+	euler.y -= movementX * sensitivity;
+	euler.x -= movementY * sensitivity;
+	euler.x = Math.min(Math.max(euler.x, -Math.PI/2+0.01), Math.PI/2-0.01);
+
+	camera.quaternion.setFromEuler(euler);
+	return false;
+});
+canvas.addEventListener('mouseup', (e) => {
+	console.log('mouse:', e.which, 'hand:', hand);
+	placeVoxel(e.which == 3 ? hand : 0);
+	return false;
+});
+canvas.addEventListener('wheel', (e) => {
+	hand += Math.sign(e.deltaY);
+	hand = hand < 1 ? 6 : hand;
+	hand = hand > 6 ? 2 : hand;
+	return false;
+});
+canvas.addEventListener('touchmove', (e) => {
+	var touch = e.touches[0] || e.changedTouches[0];
+	if(oldTouchScreenX == -1) {
+		oldTouchScreenX = touch.clientX;
+		oldTouchScreenY = touch.clientY;
+		e.preventDefault();
+		return false;
+	}
+	const movementX = touch.clientX - oldTouchScreenX;
+	const movementY = touch.clientY - oldTouchScreenY;
+	oldTouchScreenX = touch.clientX;
+	oldTouchScreenY = touch.clientY;
+
+	euler.y -= movementX * sensitivity;
+	euler.x -= movementY * sensitivity;
+	euler.x = Math.min(Math.max(euler.x, -Math.PI/2), Math.PI/2);
+
+	camera.quaternion.setFromEuler(euler);
+	/*
+	var movementX = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
+	var movementY = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+	camera.rotateOnWorldAxis( new t.Vector3(0, 1, 0), -movementX / 300 * sensitivity );
+	camera.rotateX( -movementY / 300 * sensitivity );
+	camera.rotation.y = 0*/
+	e.preventDefault();
+	return false;
+});
+canvas.addEventListener('touchend', (e) => {
+	oldTouchScreenX = -1;
+	oldTouchScreenY = -1;
+	return false;
+});
+
+
+function position () {
+	let { x, y, z } = camera.position;
+	return { x, y, z };
+}
+
+function pcx () {
+	return Math.floor(pos.x/16);
+}
+function pcz () {
+	return Math.floor(pos.z/16);
+}
+
+
+function drawOverStuff() {
+	let width = overCanvas.width;
+	let height = overCanvas.height;
+	overctx.textAlign = 'left';
+	overctx.clearRect(0, 0, width, height);
+	overctx.fillStyle = 'black';
+	overctx.fillRect(width/2-.5, height/2-n(12), 1, n(10));
+	overctx.fillRect(width/2-.5, height/2+n(2), 1, n(10));
+	overctx.fillStyle = 'white';
+	overctx.fillRect(width/2-n(12), height/2-.5,n(10), 1);
+	overctx.fillRect(width/2+n(2), height/2-.5, n(10), 1);
+	overctx.fillStyle = 'black';
+	overctx.font = '20px Consolas';
+	overctx.fillText(pos.x.toFixed(3) + ',' + pos.y.toFixed(3) + ',' + pos.z.toFixed(3), 20, 140);
+	overctx.fillText(delta.x.toFixed(3) + ',' + delta.y.toFixed(3) + ',' + delta.z.toFixed(3), 20, 160);
+	
+	overctx.fillText(onGround ? 'grounded' : 'falling', 20, 180);
+
+	overctx.imageSmoothingEnabled = false;
+	overctx.textAlign = 'center';
+	let blocks = 6;
+	for(let i = 1; i <= blocks; i++) {
+		if(hand == i)
+			overctx.fillStyle = '#ffffff88';
+		else
+			overctx.fillStyle = '#00000088';
+		overctx.fillRect(width/2 - blocks/2*90 + (i-1)*90 + 5, height - 110, 80, 80);
+		overctx.drawImage(textureImage, (i-1)*16, 16, 16, 16, width/2 - blocks/2*90 + (i-1)*90 + 10, height - 105, 70, 70);
+		overctx.fillStyle = 'white';
+		overctx.fillText(i, width/2 - blocks/2*90 + (i-1)*90 + 45, height - 10);
+	}
+}
+function newLookingLines() {
+	const geo = new t.BoxGeometry( 1, 1, 1 );
+	const wireframe = new t.WireframeGeometry( geo );
+	wireframe.translate(lookingPosition.x, lookingPosition.y, lookingPosition.z);
+
+	const line = new t.LineSegments( wireframe );
+	line.material.depthTest = true;
+	line.material.opacity = 1;
+	line.material.color.setHex( 0x000000 );
+
+	return line;
+}
+function startUp() {
+
+	// Add directional lights to scene
+	function dirLight(x, y, z, brightness) {
+		let light = new t.DirectionalLight(0xffffff, brightness*1.5);
+		light.position.set(x, y, z);
+		return light;
+	}
+	dirLights.push(dirLight(10, 0, 0, 0.6));
+	dirLights.push(dirLight(-10, 0, 0, 0.6));
+	dirLights.push(dirLight(0, 0, 10, 0.4));
+	dirLights.push(dirLight(0, 0, -10, 0.4));
+	dirLights.push(dirLight(0, 10, 0, 0.5));
+	dirLights.push(dirLight(0, -10, 0, 0.5));
+
+	for (let i = 0; i < dirLights.length; i++) {
+		scene.add(dirLights[i]);
+	}
+
+	scene.fog = new t.Fog('lightblue', (loadDistance*16)*0.8, loadDistance*16);
+
+	selectedBlockLines = newLookingLines();
+
+	scene.add( selectedBlockLines );
+
+	// generate and create meshes for starting chunks
+	for (let x = -loadDistance; x <= loadDistance; x++)
+		for (let z = -loadDistance; z <= loadDistance; z++)
+			generateChunk(x, z);
+
+	for (let x = -loadDistance; x <= loadDistance; x++)
+		for (let z = -loadDistance; z <= loadDistance; z++)
+			updateChunkMesh(x, z);
+
+	while(getVoxel(pos.x, pos.y, pos.z) > 0) {
+		pos.y++;
+	}
+
+
+	$('#before').hide();
+	$('#after').show();
+
+	frame();
+}
+
+function frame() {
+	requestAnimationFrame(frame);
+
+	move();
+
+	drawOverStuff();
+
+	const pos2d = getCanvasRelativePosition();
+	const x = (pos2d.x / canvas.width ) *  2 - 1;
+	const y = (pos2d.y / canvas.height) * -2 + 1;  // note we flip Y
+
+	const start = new t.Vector3();
+	const end = new t.Vector3();
+	start.setFromMatrixPosition(camera.matrixWorld);
+	end.set(x, y, 1).unproject(camera);
+	const intersection = intersectRay(start, end);
+	if (intersection && Infinity > (new t.Vector3(position.x, position.y, position.z)).distanceTo(new t.Vector3(...intersection.position))) {
+		const posToPlace = intersection.position.map((v, ndx) => {
+			return Math.floor(v - intersection.normal[ndx] * 0.5);
+		});
+		lookingPosition.x = posToPlace[0];
+		lookingPosition.y = posToPlace[1];
+		lookingPosition.z = posToPlace[2];
+	}
+	selectedBlockLines.geometry.center();
+	selectedBlockLines.geometry.translate(lookingPosition.x+0.5, lookingPosition.y+0.5, lookingPosition.z+0.5);
+
+	renderer.render( scene, camera );
+}
+
+function toChunkID(cx, cz) {
+	return cx + 'x' + cz;
+}
+function generateChunk(cx, cz) {
+	let chunk = new Chunk(cx, cz);
+
+	chunks[toChunkID(cx, cz)] = chunk;
+	const gen1 = performance.now();
+	let str = localStorage.getItem(chunk.id);
+
+	if(str === null )
+		chunk.generate(seed);
+	else
+		chunk.grabString(str);
+	const gen2 = performance.now();
+	console.log('Chunk ' + cx + 'x' + cz + ' generate took ' + (gen2-gen1).toFixed(2) + 'ms');
+}
+
+function updateChunkMesh(cx, cz) {
+	let id = toChunkID(cx, cz);
+
+	if(chunks[id]) {
+		const mesh1 = performance.now();
+		if(chunks[id].mesh)
+			chunks[id].mesh.removeFromParent();
+		var mesh = chunks[id].createMesh(getVoxel, material);
+
+		scene.add(mesh);
+		const mesh2 = performance.now();
+		console.log('Chunk ' + cx + 'x' + cz + ' mesh update took ' + (mesh2-mesh1).toFixed(2) + 'ms');
+	}
+}
+function getVoxel(x, y, z, index=false) {
+	let cx = Math.floor(x/16);
+	let cz = Math.floor(z/16);
+	let id = toChunkID(cx, cz);
+
+	if(!chunks[id] || y >= 256 || y < 0) {
+		return -1;
+	}
+	return chunks[id].getLocalVoxel(Math.floor(x) - cx*16, Math.floor(y), Math.floor(z) - cz*16);
+}
+function setVoxel(val, x, y, z) {
+	let cx = Math.floor(x/16);
+	let cz = Math.floor(z/16);
+	let id = toChunkID(cx, cz);
+	if(chunks[id]) {
+		chunks[id].setLocalVoxel(val, x - cx*16, y, z - cz*16);
+	}
+}
+function isFloor(val) {
+	return val % 1 === 0;
+}
+function flatLength(vector3) {
+	return Math.sqrt(vector3.x*vector3.x + vector3.z*vector3.z);
+}
+function distanceSquare(x, z, cx, cz, cr) {
+	// temporary variables to set edges for testing
+	let testX = cx;
+	let testZ = cz;
+
+	// which edge is closest?
+	if (cx < x)         testX = x;   // test left edge
+	else if (cx > x+1)  testX = x+1; // right edge
+	if (cz < z)         testZ = z;   // top edge
+	else if (cz > z+1)  testZ = z+1; // bottom edge
+
+
+	let distX = cx-testX;
+	let distZ = cz-testZ;
+	let distance = Math.sqrt( (distX*distX) + (distZ*distZ) );
+
+	if(distance < cr)
+		return {distance, testX, testZ};
+	else 
+		return false;
+}
+function move() {
+	var oldChunk = toChunkID(pcx(), pcz());
+
+	var totalMove = new t.Vector3(0, 0, 0);
+	if(movement.w == true) {
+		var diff = new t.Vector3(Math.sin(-euler.y), 0, -Math.cos(-euler.y));
+		totalMove.add(diff);
+	}
+	if(movement.s == true) {
+		var diff = new t.Vector3(-Math.sin(-euler.y), 0, Math.cos(-euler.y));
+		totalMove.add(diff);
+	}
+	if(movement.a == true) {
+		var diff = new t.Vector3(-Math.cos(-euler.y), 0, -Math.sin(-euler.y));
+		totalMove.add(diff);
+	}
+	if(movement.d == true) {
+		var diff = new t.Vector3(Math.cos(-euler.y), 0, Math.sin(-euler.y));
+		totalMove.add(diff);
+	}
+	if(movement.shift == true) {
+		pos.add(new t.Vector3(0, -0.05, 0));
+	}
+	totalMove.normalize();
+	totalMove.multiplyScalar(accel);
+
+	var flatDelta = new t.Vector3(delta.x, 0, delta.z);
+
+	flatDelta.add(totalMove);
+
+	if(flatDelta.length() > speed) {
+
+		flatDelta.normalize().multiplyScalar(speed);
+	}
+	if(movement.w == false && movement.a == false && movement.s == false && movement.d == false) {
+		flatDelta.multiplyScalar(decel);
+	}
+
+	delta.x = flatDelta.x;
+	delta.z = flatDelta.z;
+	
+	if(!onGround)
+		delta.y -= gravity;
+
+	let neighbors = [[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,0]];
+
+	var repeat = Math.ceil(1, Math.max(flatLength(delta) / playerR, delta.y));
+	var step = new t.Vector3();
+	step.copy(delta).multiplyScalar(1/repeat);
+	var onStep = 0;
+	var collided = false;
+	var canFall = true;
+	while(onStep < repeat && !collided) {
+		let oldY = pos.y;
+		pos.add(step);
+
+		if(getVoxel(pos.x, pos.y, pos.z) > 0 && Math.floor(oldY) > Math.floor(pos.y)) {
+			pos.y = Math.ceil(pos.y);
+			delta.y = 0;
+			onGround = true;
+		}
+		if(getVoxel(pos.x, pos.y+playerHeight, pos.z) > 0 && Math.floor(oldY+playerHeight) < Math.floor(pos.y+playerHeight)) {
+			pos.y = Math.floor(pos.y+playerHeight) - playerHeight;
+			delta.y = 0;
+		}
+		for (let i = 0; i < neighbors.length; i++) {
+			const nx = Math.floor(pos.x)+neighbors[i][0];
+			const nz = Math.floor(pos.z)+neighbors[i][1];
+
+			const collide = distanceSquare(nx, nz, pos.x, pos.z, playerR);
+			if(collide !== false && (getVoxel(nx, pos.y, nz) > 0 || getVoxel(nx, pos.y+1, nz) > 0 || getVoxel(nx, pos.y+playerHeight, nz) > 0)) {
+				let moveBack = new t.Vector3(collide.testX, 0, collide.testZ);
+				moveBack.sub(pos);
+				moveBack.y = 0;
+				moveBack.normalize();
+				moveBack.multiplyScalar((collide.distance - playerR)-0.0001);
+				pos.add(moveBack);
+				collided = true;
+			}
+			if(onGround && collide !== false && getVoxel(nx, pos.y-1, nz) > 0) {
+				canFall = false;
+			}
+		}
+		onStep++;
+	}
+	onGround = !canFall;
+	if(getVoxel(pos.x, pos.y, pos.z) > 0) {
+		console.log(' -- no resolve -- ');
+	}
+
+	/*pos.multiplyScalar(1000);
+	pos.round();
+	pos.multiplyScalar(1/1000);*/
+
+	camera.position.copy(pos);
+	camera.position.y += playerEyeline;
+
+	updateAroundPlayer(oldChunk);
+}
+function saveAllChunks() {
+	for (const id in chunks) {
+		chunks[id].storeString();
+	}
+}
+function updateAroundPlayer(oldChunk) {
+	if(oldChunk != toChunkID(pcx(), pcz())) {
+		setTimeout(() => {
+			for (const id in chunks) {
+				if(Math.abs(chunks[id].cx - pcx()) > loadDistance || Math.abs(chunks[id].cz - pcz()) > loadDistance) {
+					chunks[id].storeString();
+					chunks[id].mesh.removeFromParent();
+					console.log('delete', id);
+					delete chunks[id];
+				}
+
+			}
+			
+			let createdChunks = [];
+			for (let x = pcx()-loadDistance; x <= pcx()+loadDistance; x++)
+				for (let z = pcz()-loadDistance; z <= pcz()+loadDistance; z++) {
+					if(!chunks[toChunkID(x, z)]) {
+						createdChunks.push({ x, z });
+						generateChunk(x, z);
+					}
+				}
+			for (let i = 0; i < createdChunks.length; i++) {
+				updateChunkMesh(createdChunks[i].x, createdChunks[i].z, true);
+			}
+
+		}, 0);
+	}
+}
+function getCanvasRelativePosition() {
+	const rect = canvas.getBoundingClientRect();
+	return {
+		x: (canvas.width/2 - rect.left) * canvas.width  / rect.width,
+		y: (canvas.height/2 - rect.top ) * canvas.height / rect.height,
+	};
+}
+function updateVoxelGeometry(x, y, z) {
+	let updatedChunks = {};
+	for (const offset of neighborOffsets) {
+		let cx = Math.floor((x + offset[0]) / 16);
+		let cz = Math.floor((z + offset[2]) / 16);
+		let id = toChunkID(cx, cz);
+		if(!updatedChunks[id]) {
+			updatedChunks[id] = true;
+			updateChunkMesh(cx, cz);
+		}
+	}
+}
+function placeVoxel(block) {
+	const pos2d = getCanvasRelativePosition();
+	const x = (pos2d.x / canvas.width ) *  2 - 1;
+	const y = (pos2d.y / canvas.height) * -2 + 1;  // note we flip Y
+
+	const start = new t.Vector3();
+	const end = new t.Vector3();
+	start.setFromMatrixPosition(camera.matrixWorld);
+	end.set(x, y, 1).unproject(camera);
+	const intersection = intersectRay(start, end);
+	if (intersection && Infinity > (new t.Vector3(position.x, position.y, position.z)).distanceTo(new t.Vector3(...intersection.position))) {
+		const voxelId = block;
+		// the intersection point is on the face. That means
+		// the math imprecision could put us on either side of the face.
+		// so go half a normal into the voxel if removing (currentVoxel = 0)
+		// our out of the voxel if adding (currentVoxel  > 0)
+		const posToPlace = intersection.position.map((v, ndx) => {
+			return Math.floor(v + intersection.normal[ndx] * (voxelId > 0 ? 0.5 : -0.5));
+		});
+		if(block == 0 || !(posToPlace[0] == Math.floor(pos.x) && (posToPlace[1] == Math.floor(pos.y) || posToPlace[1] == Math.floor(pos.y+1)) && posToPlace[2] == Math.floor(pos.z)))
+		setVoxel(voxelId, ...posToPlace);
+		/*if(getVoxel(...posToPlace) !== 0) {
+			setVoxel(0, ...posToPlace);
+		}*/
+		updateVoxelGeometry(...posToPlace);
+		//requestRenderIfNotRequested();
+	}
+}
+
+function intersectRay(start, end) {
+	let dx = end.x - start.x;
+	let dy = end.y - start.y;
+	let dz = end.z - start.z;
+	const lenSq = dx * dx + dy * dy + dz * dz;
+	const len = Math.sqrt(lenSq);
+
+	dx /= len;
+	dy /= len;
+	dz /= len;
+
+	let t = 0.0;
+	let ix = Math.floor(start.x);
+	let iy = Math.floor(start.y);
+	let iz = Math.floor(start.z);
+
+	const stepX = (dx > 0) ? 1 : -1;
+	const stepY = (dy > 0) ? 1 : -1;
+	const stepZ = (dz > 0) ? 1 : -1;
+
+	const txDelta = Math.abs(1 / dx);
+	const tyDelta = Math.abs(1 / dy);
+	const tzDelta = Math.abs(1 / dz);
+
+	const xDist = (stepX > 0) ? (ix + 1 - start.x) : (start.x - ix);
+	const yDist = (stepY > 0) ? (iy + 1 - start.y) : (start.y - iy);
+	const zDist = (stepZ > 0) ? (iz + 1 - start.z) : (start.z - iz);
+
+	// location of nearest voxel boundary, in units of t
+	let txMax = (txDelta < Infinity) ? txDelta * xDist : Infinity;
+	let tyMax = (tyDelta < Infinity) ? tyDelta * yDist : Infinity;
+	let tzMax = (tzDelta < Infinity) ? tzDelta * zDist : Infinity;
+
+	let steppedIndex = -1;
+
+	// main loop along raycast vector
+	while (t <= len) {
+		const voxel = getVoxel(ix, iy, iz);
+		if (voxel) {
+			return {
+				position: [
+					start.x + t * dx,
+					start.y + t * dy,
+					start.z + t * dz,
+				],
+				normal: [
+					steppedIndex === 0 ? -stepX : 0,
+					steppedIndex === 1 ? -stepY : 0,
+					steppedIndex === 2 ? -stepZ : 0,
+				],
+				voxel,
+			};
+		}
+
+		// advance t to next nearest voxel boundary
+		if (txMax < tyMax) {
+			if (txMax < tzMax) {
+				ix += stepX;
+				t = txMax;
+				txMax += txDelta;
+				steppedIndex = 0;
+			} else {
+				iz += stepZ;
+				t = tzMax;
+				tzMax += tzDelta;
+				steppedIndex = 2;
+			}
+		} else {
+			if (tyMax < tzMax) {
+				iy += stepY;
+				t = tyMax;
+				tyMax += tyDelta;
+				steppedIndex = 1;
+			} else {
+				iz += stepZ;
+				t = tzMax;
+				tzMax += tzDelta;
+				steppedIndex = 2;
+			}
+		}
+	}
+	return null;
+}
+
+
+
+startUp();
+
+</script>
