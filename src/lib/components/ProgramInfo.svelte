@@ -14,14 +14,16 @@
 
 	overflow: hidden;
 	cursor: pointer;
+
+	z-index: 1000;
 }
 .program-info:hover {
 	@apply bg-gray-100;
 }
 
 .program-info.open {
-	width: 16rem;
-	height: 14rem;
+	width: 18rem;
+	height: 16rem;
 }
 
 .program-info.closed {
@@ -33,11 +35,11 @@
 </style>
 <div class={`thick-black-border program-info ${visible ? 'open' : 'closed'}`} on:click={toggleOpen} on:keypress={toggleOpen}>
 	{#if visible}
-		<div class="p-2 break-words overflow-y-auto" style="width: 15.5rem; height: 13.5rem;" in:fade={{ delay: 250, duration: 250 }} out:fade={{ duration: 250 }}>
+		<div class="p-2 break-words overflow-y-auto" style="width: 17.5rem; height: 15.5rem;" in:fade|local={{ delay: 250, duration: 250 }} out:fade|local={{ duration: 250 }}>
 			<slot />
 		</div>
 	{:else}
-		<div class="artificially-center" in:fade={{ delay: 250, duration: 250 }} out:fade={{ duration: 250 }}>
+		<div class="artificially-center" in:fade|local={{ delay: 250, duration: 250 }} out:fade|local={{ duration: 250 }}>
 			<i class="fa-solid fa-question"></i>
 		</div>
 	{/if}

@@ -8,20 +8,11 @@
     flex-grow: 1;
   }
 
-	h4 {
-		padding-top: 6px;
-		font-weight: 500;
-		text-transform: uppercase;
-		@apply text-xs font-IBMPlexMono;
-	}
-	p {
-		@apply text-sm;
-	}
 </style>
 <div class="program">
 	<ProgramInfo>
-		<h2 class="font-semibold font-IBMPlexMono">Voxel Based Game</h2>
-		<p class="py-1">Made with THREE.js and my tears.</p>
+		<h2>Voxel Based Game</h2>
+		<p>Made with THREE.js and my tears.</p>
 		<h4>Controls</h4>
 		<p>WASD to move and click to hide mouse</p>
 		<h4>Mobile Controls</h4>

@@ -80,6 +80,22 @@
   transform: translate(-50%, -50%);
 }
 
+.program-info h2 {
+  font-weight: 600;
+  @apply font-IBMPlexMono;
+}
+
+.program-info h4 {
+  padding-top: 6px;
+  font-weight: 500;
+  text-transform: uppercase;
+  @apply text-xs font-IBMPlexMono;
+}
+.program-info p {
+  padding: 3px 0;
+  @apply text-sm;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

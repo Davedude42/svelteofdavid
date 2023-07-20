@@ -230,8 +230,8 @@
 				</div>
 			</div>
 			<div class="flex flex-row gap-2" style="padding: 10px; padding-top: 0px;">
-				<button class="flex-1 thick-black-border h-10 bg-white hover:bg-gray-100 active:bg-gray-200" on:click={prevSlide}><i class="fa-solid fa-chevron-left"></i></button>
-				<button class="flex-1 thick-black-border h-10 bg-white hover:bg-gray-100 active:bg-gray-200" on:click={nextSlide}><i class="fa-solid fa-chevron-right"></i></button>
+				<button class="flex-1 thick-black-border h-10 bg-white hover:bg-lighter active:bg-primary" on:click={prevSlide}><i class="fa-solid fa-chevron-left"></i></button>
+				<button class="flex-1 thick-black-border h-10 bg-white hover:bg-lighter active:bg-primary" on:click={nextSlide}><i class="fa-solid fa-chevron-right"></i></button>
 			</div>
 		</div>
 	</div>

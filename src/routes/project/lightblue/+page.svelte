@@ -40,18 +40,15 @@
 
 	@apply px-4 font-IBMPlexMono font-medium;
 }
-
-.outlandish-button {
-	box-shadow: 4px 4px black;
-}
-
-.outlandish-button:active {
-	transform: translate(4px, 4px);
-
-	box-shadow: none;
-}
 </style>
 <svelte:window on:resize={() => { resizeBoard(); drawBoard(); }} />
+<ProgramInfo>
+	<h2><span class="bg-lighter">Light Blue</span></h2>
+	<p>It's not the best, but it's still better than me.</p>
+	<p>I have to compile it into web assembly so it can be super-duper fast.</p>
+	<h4>Controls</h4>
+	<p>Click on a piece then on a spot and it will move.</p>
+</ProgramInfo>
 <div class:hidden={!pgnPopupOpen} class="fixed z-40 inset-0 flex flex-col items-center justify-center bg-black/40">
 	<div style="width: 500px; height: 400px; max-width: 90%;" class="thick-black-border flex flex-col gap-4 p-4 bg-lighter">
 		<div class="flex flex-row justify-between">
@@ -146,6 +143,7 @@
 import { onMount, tick } from 'svelte';
 
 import OutlandishButton from '$lib/components/OutlandishButton.svelte';
+import ProgramInfo from '$lib/components/ProgramInfo.svelte';
 
 import { Board } from '$lib/lightblue/board.ts';
 import { KING, startingPosition, letters } from '$lib/lightblue/constants.ts';
