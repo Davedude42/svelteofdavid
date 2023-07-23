@@ -1,16 +1,13 @@
 <style>
-.projects-grid {
-	display: grid;
-	grid-template-columns: min(40rem, 100%);
-	gap: 1rem;
-	justify-content: center;
-}
 .project-item {
 	display: grid;
 	grid-template-columns: 8rem 1fr;
 	grid-template-rows: min-content 1fr;
 	row-gap: 1rem;
 	column-gap: 2rem;
+
+	width: 40rem;
+	max-width: 100%;
 
 	padding: 1rem;
 
@@ -66,7 +63,7 @@
 			Projects
 		</div>
 	</div>
-	<div class="projects-grid p-4">
+	<div class="flex flex-col items-center gap-6 p-4">
 		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/voxelbasedgame">
 			<img src={vbgImage} alt="My mindcraft" class="row-span-2 thick-black-border" />
 			<div class="font-IBMPlexMono text-2xl">Voxel Based Game</div>
@@ -82,6 +79,11 @@
 			<div class="font-IBMPlexMono text-2xl">LED Lights</div>
 			<div class="text-lg">My strip of Light Emitting Diodes</div>
 		</a>
+	</div>
+	<div class="self-center flex flex-row items-stretch h-12 py-4 box-content">
+		<div class="david-title">
+			Toys
+		</div>
 	</div>
 </div>
 <!--
