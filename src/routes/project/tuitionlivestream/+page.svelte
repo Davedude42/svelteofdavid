@@ -1,7 +1,27 @@
 <style>
-	p, blockquote {
-		margin-bottom: 8px;
+@keyframes money-falling {
+	from {
+		background-position: 0px 0px;
 	}
+	to {
+		background-position: 0px 399px;
+	}
+}
+
+p, blockquote {
+	margin-bottom: 8px;
+}
+.cash-money-background {
+	background-image: url('/staticimgs/moneybackground.jpg');
+	background-repeat: repeat;
+	background-size: 400px;
+	background-position: 0px 0px;
+
+	animation: money-falling;
+	animation-duration: 20s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+}
 </style>
 <ProgramInfo>
 	<h2>Tuition Live Stream</h2>
@@ -9,18 +29,18 @@
 	<p>If you have a scholarship or something, then good job!</p>
 	<p>It only adds up during school time so if it isn't changing that's why.</p>
 </ProgramInfo>
-<div class="flex flex-col items-center gap-4 px-4" style="padding-top: 80px; padding-bottom: 24px;">
-	<div class="thick-black-border w-full p-4" style="max-width: 600px">
+<div class="cash-money-background flex flex-col items-center gap-4 px-4" style="padding-top: 80px; padding-bottom: 24px;">
+	<div class="thick-black-border w-full p-4 bg-white" style="max-width: 600px">
 		<p class="font-bold">Hey, have you ever wondered...</p>
 		<blockquote class="border-l-2 border-black pl-3 ml-1">
 			I go to a certain private school, and my parents have to pay some big amount for me to be here, but how much is it really?
 		</blockquote>
 	</div>
-	<div class="flex flex-row items-center justify-between thick-black-border w-full p-4" style="max-width: 600px">
+	<div class="flex flex-row items-center justify-between thick-black-border w-full p-4 bg-white" style="max-width: 600px">
 		<div class="font-bold">Short Answer</div>
 		<div class="text-2xl">~<span class="font-medium font-IBMPlexMono">${ Math.round(dayPrice) }</span> every day</div>
 	</div>
-	<div class="flex flex-col items-center thick-black-border w-full p-4" style="max-width: 600px">
+	<div class="flex flex-col items-center thick-black-border w-full p-4 bg-white" style="max-width: 600px">
 		<div class="flex flex-row items-center justify-between w-full">
 			<div class="font-bold">Live Stream</div>
 		</div>
@@ -43,7 +63,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="flex flex-col items-center thick-black-border w-full p-4" style="max-width: 600px">
+	<div class="flex flex-col items-center thick-black-border w-full p-4 bg-white" style="max-width: 600px">
 		<div class="flex flex-row items-center justify-between w-full pb-1">
 			<div class="font-bold">Tuition Lookup</div>
 		</div>
