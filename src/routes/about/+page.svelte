@@ -129,12 +129,7 @@
 	@apply px-4 text-2xl font-IBMPlexMono font-medium;
 }
 </style>
-<div class="relative flex-grow flex flex-col items-center">
-	<div class="david-title-wrapper">
-		<div class="david-title">
-			About
-		</div>
-	</div>
+<div class="relative flex-grow flex flex-col items-center" style="margin-top: 80px;">
 	<div class="about-grid p-4">
 		<div class="meee-image thick-black-border comic-shadow bg-white p-4">
 			<img src={mee} class="w-full h-full" alt="meeeee" />

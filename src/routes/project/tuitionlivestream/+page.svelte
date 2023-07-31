@@ -37,7 +37,7 @@ p, blockquote {
 		</blockquote>
 	</div>
 	<div class="flex flex-row items-center justify-between thick-black-border w-full p-4 bg-white" style="max-width: 600px">
-		<div class="font-bold">Short Answer</div>
+		<div class="font-bold">Answer</div>
 		<div class="text-2xl">~<span class="font-medium font-IBMPlexMono">${ Math.round(dayPrice) }</span> every day</div>
 	</div>
 	<div class="flex flex-col items-center thick-black-border w-full p-4 bg-white" style="max-width: 600px">
@@ -65,7 +65,7 @@ p, blockquote {
 	</div>
 	<div class="flex flex-col items-center thick-black-border w-full p-4 bg-white" style="max-width: 600px">
 		<div class="flex flex-row items-center justify-between w-full pb-1">
-			<div class="font-bold">Tuition Lookup</div>
+			<div class="font-bold">Tuition Costs</div>
 		</div>
 		<div class="flex flex-row items-center justify-between w-full py-4" style="max-width: 400px">
 			<div class="text-xl font-bold">1 Hour</div>

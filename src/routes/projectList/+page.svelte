@@ -6,9 +6,6 @@
 	row-gap: 1rem;
 	column-gap: 2rem;
 
-	width: 40rem;
-	max-width: 100%;
-
 	padding: 1rem;
 
 	font-weight: 500;
@@ -22,48 +19,40 @@
 	height: 8rem;
 }
 
-
-.david-title-wrapper {
-	display: flex;
-	flex-direction: row;
-	align-items: stretch;
+.toys-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	justify-items: stretch;
 	align-self: center;
+	gap: 1.5rem;
 
-	box-sizing: content-box;
+	padding: 1rem;
 
-	@apply h-12 py-4;
+	overflow: hidden;
 }
 
-@media only screen and (min-width: 768px) and (max-width: 1272px) {
-	.david-title-wrapper {
-		align-self: start;
-		padding-left: 510px;
+.toys-grid.one-column, .toys-grid.two-columns {
+	grid-template-columns: 1fr;
+	width: 42rem;
+	max-width: 100%;
+}
+
+@media only screen and (min-width: 900px) {
+	.toys-grid.two-columns {
+		grid-template-columns: 1fr 1fr;
+		width: 1100px;
+		max-width: 100%;
 	}
 }
 
-.david-title {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-
-	min-width: 192px;
-	border: 4px solid black;
-
-	background-color: white;
-
-	box-sizing: content-box;
-
-	@apply px-4 text-2xl font-IBMPlexMono font-medium;
-}
 </style>
-<div class="relative flex-grow flex flex-col items-stretch">
-	<div class="david-title-wrapper">
-		<div class="david-title">
+<div class="relative flex-grow flex flex-col items-stretch gap-4">
+	<div class="self-center flex flex-col items-stretch w-96 thick-black-border" style="margin-top: 80px;">
+		<div class="project-title p-2 bg-black text-white text-center font-IBMPlexMono font-bold text-xl">
 			Projects
 		</div>
 	</div>
-	<div class="flex flex-col items-center gap-6 p-4">
+	<div class="toys-grid one-column">
 		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/voxelbasedgame">
 			<img src={vbgImage} alt="My mindcraft" class="row-span-2 thick-black-border" />
 			<div class="font-IBMPlexMono text-2xl">Voxel Based Game</div>
@@ -80,10 +69,22 @@
 			<div class="text-lg">My strip of Light Emitting Diodes</div>
 		</a>
 	</div>
-	<div class="self-center flex flex-row items-stretch h-12 py-4 box-content">
-		<div class="david-title">
+	<div class="self-center flex flex-col items-stretch w-96 thick-black-border">
+		<div class="project-title p-2 bg-black text-white text-center font-IBMPlexMono font-bold text-xl">
 			Toys
 		</div>
+	</div>
+	<div class="toys-grid two-columns">
+		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/tuitionlivestream">
+			<img src={tlsImage} alt="My mindcraft" class="row-span-2 thick-black-border" />
+			<div class="font-IBMPlexMono text-2xl">Tuition Live Stream</div>
+			<div class="text-lg">Appreciate what your parents provide for you!</div>
+		</a>
+		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/tuitionlivestream">
+			<img src={tlsImage} alt="My mindcraft" class="row-span-2 thick-black-border" />
+			<div class="font-IBMPlexMono text-2xl">Tuition Live Stream</div>
+			<div class="text-lg">Appreciate what your parents provide for you!</div>
+		</a>
 	</div>
 </div>
 <!--
@@ -154,4 +155,5 @@
 import vbgImage from '$lib/assets/imgs/projects/voxelbasedgame.jpg';
 import lightblueImage from '$lib/assets/imgs/projects/lightblue.jpg';
 import ledlightsImage from '$lib/assets/imgs/projects/ledlights.jpg';
+import tlsImage from '$lib/assets/imgs/projects/tuitionlivestream.jpg';
 </script>
