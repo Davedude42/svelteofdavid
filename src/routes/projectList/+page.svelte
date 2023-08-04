@@ -75,10 +75,10 @@
 		</div>
 	</div>
 	<div class="toys-grid two-columns">
-		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/tuitionlivestream">
-			<img src={tlsImage} alt="My mindcraft" class="row-span-2 thick-black-border" />
-			<div class="font-IBMPlexMono text-2xl">Tuition Live Stream</div>
-			<div class="text-lg">Appreciate what your parents provide for you!</div>
+		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/gravity">
+			<img src={gravityImage} alt="Gravity" class="row-span-2 thick-black-border" />
+			<div class="font-IBMPlexMono text-2xl">Gravity</div>
+			<div class="text-lg">Take a break from the world by smashing some circles against each other.</div>
 		</a>
 		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/tuitionlivestream">
 			<img src={tlsImage} alt="My mindcraft" class="row-span-2 thick-black-border" />
@@ -156,4 +156,5 @@ import vbgImage from '$lib/assets/imgs/projects/voxelbasedgame.jpg';
 import lightblueImage from '$lib/assets/imgs/projects/lightblue.jpg';
 import ledlightsImage from '$lib/assets/imgs/projects/ledlights.jpg';
 import tlsImage from '$lib/assets/imgs/projects/tuitionlivestream.jpg';
+import gravityImage from '$lib/assets/imgs/projects/gravity.jpg';
 </script>
