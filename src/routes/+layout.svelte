@@ -87,13 +87,16 @@
 <svelte:window
   on:click={tryClosePopover}
 />
-<Analytics />
 <script lang="ts">
 import "../app.css";
 
 import logo from '$lib/assets/imgs/whiteSmallBlack.png';
 
-import { Analytics } from '@vercel/analytics/react';
+import { inject } from '@vercel/analytics';
+ 
+inject({
+  debug: false,
+});
 
 let popoverOpen = false;
 
