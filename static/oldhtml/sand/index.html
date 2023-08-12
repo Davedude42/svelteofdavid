@@ -1,0 +1,481 @@
+<style>
+	#canv {
+		width: 800px;
+		height: 400px;
+		-ms-interpolation-mode: nearest-neighbor;
+		image-rendering: pixelated;
+		background-color: black;
+		border: 6px solid brown;
+		max-width: 100%;
+		box-sizing: content-box;
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+		outline: none;
+		-webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+	}
+	#item {
+		-webkit-text-stroke: 0.06px black;
+		color: rgb(200,0,0);
+	}
+	#onCell font {
+		-webkit-text-stroke: 0.06px black;
+	}
+	.popup {
+		background-color: white;
+		position: absolute;
+		white-space: nowrap;
+		left: 50%;
+		top: 52px;
+		transform: translateX(-50%);
+		min-width: 55px;
+		text-align: center;
+		padding: 1px 8px;
+		border-radius: 6px;
+		display: none;
+		z-index: 50;
+	}
+	.popup::after {
+		content: '';
+		width: 0px;
+		height: 0px;
+		border: 8px solid transparent;
+		border-bottom-color: white;
+		position: absolute;
+		left: 50%;
+		top:-16px;
+		transform: translateX(-50%);
+		pointer-events: none;
+	}
+	div:hover > .popup {
+		display: block;
+	}
+</style>
+<script src="basicFunctions.js"></script>
+<script src="materials.js"></script>
+<script src="sandStep.js"></script>
+<script src="noisejs-master/perlin.js"></script>
+<link rel="stylesheet" href="../fromLOD.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<div class="text-center pb-2 font-mono md:hidden">Hey sorry if you're on mobile. It ummm, yeah...</div>
+<div class="m-auto w-[812px] max-w-full">
+	<div class="float-left border-[6px] border-[brown] border-bottom-0 h-[200px] w-[800px] box-content flex flex-row select-none">
+		<div class="flex flex-col bg-gray-200 flex-shrink-0" style="border-right: 6px solid brown;">
+			<div class="py-2 w-28 text-lg monospace text-center" id="matName" style="color: white; background-color: rgb(200,0,0);">
+				brick
+			</div>
+			<div class="flex-grow">
+
+			</div>
+			<div class="w-28 text-lg monospace text-center font-mono" id="onOn">--:--</div>
+			<div class="w-28 text-lg monospace text-center font-mono" id="onTemp">0 F</div>
+			<div class="w-28 text-lg monospace text-center font-mono mb-2" id="onName">---</div>
+		</div>
+		<div class="flex flex-row flex-wrap flex-shrink-0 content-start bg-gray-600 w-84 box-content" id="matSquares" style="border-right: 6px solid brown;">
+
+		</div>
+		<div class="flex-grow bg-gray-200 flex flex-col font-mono">
+			<div id="simTemp" class="py-0.5 px-2">avr: 0 F</div>
+			<div class="py-0.5 px-2">
+				Temp Diffusion: <span id="diffuse">0.15</span>
+				<input value="0.15" min="0" max="0.8" step="0.05" type="range" style="width: 100px;" oninput="tempS = this.value*1; document.getElementById('diffuse').innerHTML = (this.value*1).toFixed(2);" onkeydown="this.blur(); return false;" />
+			</div>
+			<div class="py-0.5 flex flex-row">
+				<button class="bg-red-500 mx-1.5 my-1 px-2" onclick="setKey(-1);" id="square-1">Temp Gun</button>
+				<div>
+					Temp: <span id="gun">212 F</span><br>
+					<input value="10" min="-16" max="50" step="0.05" type="range" style="width: 200px;" oninput="gunTemp = Math.round(this.value*this.value * Math.sign(this.value)); document.getElementById('gun').innerHTML = Math.round(gunTemp*9/5+32) + ' F';" onkeydown="this.blur(); return false;" />
+				</div>
+			</div>
+			<div class="py-0.5 px-2 flex flex-row-end-4">
+				<div class="flex-grow">
+					<input type="checkbox" id="stateChanges" class="w-4 h-4 transform translate-y-0.5" oninput="stateChanges = this.checked;" checked /> State changes
+				</div>
+				<!--<div class="flex-grow">
+					<input type="checkbox" id="flames" class="w-4 h-4 transform translate-y-0.5" oninput="flames = this.checked;" checked /> Flames
+				</div>-->
+			</div>
+			<div class="flex-grow text-xs px-2 whitespace-nowrap">
+				Press V to switch between views<br>
+				Press Space to pause
+			</div>
+			<div class="p-1 space-x-1 flex flex-row">
+				<button class="bg-red-700 px-2 py-1 text-white flex-grow hover:bg-red-800 active:bg-red-900" onclick="fillScreen();">Fill Screen</button>
+				<button class="bg-red-700 px-2 py-1 text-white flex-grow hover:bg-red-800 active:bg-red-900" onclick="replaceGas();">Replace Gases</button>
+			</div>
+		</div>
+	</div>
+	<div id="wrapper">
+		<canvas id="canv" width="200" height="100" onmouseenter="mousein=true;" onmouseleave="mousein=false;"></canvas>
+	</div>
+</div>
+<!--<p id="item">brick</p>
+<p id="onCell">air<br>- C<br>- F</p>
+<p style="font-family:monospace;" id="simInfo"></p>
+<p>Temp diffusion: <span id="diffuse">0.15</span><input value="0.15" min="0" max="0.8" step="0.05" type="range" style="width: 100px;" oninput="tempS = this.value*1; document.getElementById('diffuse').innerHTML = (this.value*1).toFixed(2);" onkeydown="this.blur(); return false;" /></p>
+<p>Gun Temp: <span id="gun">100</span><br><input value="10" min="-16" max="50" step="0.05" type="range" style="width: 200px;" oninput="gunTemp = Math.round(this.value*this.value * (this.value<0?-1:1)); document.getElementById('gun').innerHTML = gunTemp;" onkeydown="this.blur(); return false;" /></p>
+<p>State changes: <input type="checkbox" id="stateChanges" oninput="stateChanges = this.checked;" checked /></p>
+<p>Flames: <input type="checkbox" id="flames" oninput="flames = this.checked;" checked /></p>
+<p id="debug"></p>-->
+<script>
+	console.log('Use arrow keys to change material; press v to change between temo and material view');
+	// canvas vars
+	var can = document.getElementById('canv');
+	var ctx = can.getContext('2d');
+	var dim = {x: 152, y: 102}; // dimsension of grid, including hidden border
+	var pxs = ctx.createImageData(dim.x, dim.y); // pixel grid
+
+	// simulation vars
+	var int; // the interval of steps
+	var grid = []; // grid of squares
+	var tempS = 0.15; // scale of temperature diffusion
+	var avrTemp = 20; // calculated every step
+	var running = true;
+	var tempRan = 10; // how random state changes are
+	var stateChanges = true;
+	var flames = true;
+	
+	// ui vars
+	var mousedown = false;
+	var mousein = false;
+	var mousepos = {x: 0, y: 0};
+	var key = 1; // id of materials being placed
+	var view = 0; // 0 - normal, 1 - temp
+	var penD = 5; // pen diameter
+	var colors = [
+		{ temp: -Infinity, color: [0,0,0] },
+		{ temp: -200, color: [0,0,0] }, // black
+		{ temp: -50, color: [38,54,158] }, // dark blue
+		{ temp: 0, color: [64,214,255] }, // light teal
+		{ temp: 20, color: [45,237,61] }, // green
+		{ temp: 80, color: [255,255,0] }, // yellow
+		{ temp: 150, color: [255,162,0] }, // orange
+		{ temp: 300, color: [255,0,0] }, // red
+		{ temp: 1000, color: [255,0,255] }, // magenta
+		{ temp: Infinity, color: [255,0,255] }
+	]; // colors of temps in C
+	var tempR = 1; // rounding of temp colors to nearest
+	var vScale = 4; // scale of grid to html
+	var previousStepTimes = -1;
+	var gunTemp = 100;
+	noise.seed(Math.random());
+
+	//console.log('%c' + key + ': %c' + mats[key].name, 'color: black;', `color: rgb(200,0,0);`);
+	/*window.ondblclick = function () {
+		document.getElementById('wrapper').requestFullscreen();
+		can.style.height = screen.height + 'px';
+		can.style.width = screen.height*5/4 + 'px';
+		vScale = screen.height/80;
+		document.getElementById('wrapper').style.textAlign = 'center';
+		document.getElementById('wrapper').style.backgroundColor = '#000033';
+	}*/
+	can.ontouchstart = function(e) {
+		e.preventDefault();
+	};
+	window.onkeydown = function (event) {
+		if(event.key=='ArrowLeft') {
+			key--;
+			key = Math.min(mats.length-1, Math.max(-1, key));
+		} else if(event.key=='ArrowRight') {
+			key++;
+			key = Math.min(mats.length-1, Math.max(-1, key));
+		} else if(event.key == 'v') {
+			view = (!view)*1;
+			console.log('-- Showing ' + (view==0?'normal':'temp') + ' -- ');
+		} else if(event.key == ' ') {
+			running = !running;
+			if(running)
+				console.log('-- Running -- ');
+			else 
+				console.log('-- Paused -- ');
+			return false;
+		}
+		/*if(event.key=='ArrowLeft' || event.key=='ArrowRight') {
+			var color = key >= 0 ? mats[key].singleColor.join(',') : '255,0,0';
+			var name = key >= 0 ? mats[key].name : 'Gun Temp';
+			document.getElementById('item').style.color = `rgb(${color})`;
+			document.getElementById('item').innerHTML = name;
+			console.log('%c' + key + ': %c' + name, 'color: black;', `color: rgb(${color});`);
+		}*/
+		
+	}
+	function mdown(x, y) {
+		mousedown = true;
+		console.log('down', x, y);
+		
+		mousepos = {x: Math.max(1,Math.min(dim.x-2, Math.floor(x/vScale)+1)), y: Math.max(1,Math.min(dim.y-2, Math.floor(y/vScale)+1))};
+		if(mousein)
+			pen(mousepos.x, mousepos.y);
+	}
+	can.addEventListener('mousedown',  function (event) { mdown(event.offsetX, event.offsetY); });
+	can.addEventListener('touchstart',  function (event) {  
+		var touch = event.touches[0] || event.changedTouches[0]; 
+		var rect = event.target.getBoundingClientRect();
+		mdown(touch.pageX - rect.left, touch.pageY - rect.top);
+	});
+
+	function mup() {
+		mousedown = false;
+	}
+	can.addEventListener('mouseup',  function (event) { mup(); });
+	can.addEventListener('touchend',  function (event) { mup(); });
+
+	function mmove(x, y) {
+		console.log(x, y);
+		mousepos = {x: Math.max(1,Math.min(dim.x-2, Math.floor(x/vScale)+1)), y: Math.max(1,Math.min(dim.y-2, Math.floor(y/vScale)+1))};
+		if(mousedown/* && mousein*/) {
+			pen(mousepos.x, mousepos.y);
+		}
+		showOnCell();
+	}
+	can.addEventListener('mousemove',  function (event) { mmove(event.offsetX, event.offsetY); });
+	can.addEventListener('touchmove',  function (event) { 
+		var touch = event.touches[0] || event.changedTouches[0]; 
+		var rect = event.target.getBoundingClientRect();
+		mmove(touch.pageX - rect.left, touch.pageY - rect.top);
+	});
+
+	function fillScreen() {
+		if(key == -1)
+			return false;
+		for (let x = 1; x < dim.x - 1; x++) {
+			for (let y = 1; y < dim.y - 1; y++) {
+				stateChange(x, y, key, true);
+			}
+		}
+	}
+	function replaceGas() {
+		if(key == -1)
+			return false;
+		for (let x = 1; x < dim.x - 1; x++) {
+			for (let y = 1; y < dim.y - 1; y++) {
+				if(mats[grid[x][y].id].type == 3)
+					stateChange(x, y, key, true);
+			}
+		}
+	}
+
+	function showOnCell() {
+		var temp = grid[mousepos.x][mousepos.y].temp;
+		var item = mats[grid[mousepos.x][mousepos.y].id].name;
+		var color = mats[grid[mousepos.x][mousepos.y].id].singleColor.join(',');
+		var x = mousepos.x;
+		var y = mousepos.y;
+		var data = grid[x][y].data.burnEndTime;
+		$('#onOn').text(`${x<10?'0'+x:x} : ${y<10?'0'+y:y}`);
+		$('#onTemp').text(`${isNaN(temp)?'--.-':(temp*9/5+32).toFixed(1)} F`);
+		$('#onName').text(item);
+		//document.getElementById('onCell').innerHTML = `<b>${x<10?'0'+x:x}, ${y<10?'0'+y:y}</b><br><font style="color:rgb(${color});">${item}</font><br>${isNaN(temp)?'--.-':temp.toFixed(1)} C<br>${isNaN(temp)?'--.-':(temp*9/5+32).toFixed(1)} F<br>${data}`;
+		
+	}
+
+	function pen(x, y) {
+		if(key <= 0 || mats[key].type == 0 || key == 9 || key == 15) {
+			for (let i = x-Math.floor((penD-1)/2)-1; i < x+Math.floor((penD-1)/2); i++) {
+				for (let j = y-Math.floor((penD-1)/2)-1; j < y+Math.floor((penD-1)/2); j++) {
+					if(i > 0 && j > 0 && i < dim.x-1 && j < dim.y-1) {
+						if(key == -1) {
+							
+							if(!isNaN(grid[i][j].temp)) {
+								grid[i][j].temp = gunTemp;
+							}
+						} else if(key == 9 || key == 15) {
+							if(!isNaN(grid[i][j].temp)) {
+								if(mats[grid[i][j].id].type == 3) {
+									stateChange(i, j, key, true);
+									grid[i][j].graved = true;
+								} else {
+									if(key == 9 && grid[i][j].temp < 300)
+										grid[i][j].temp += 50;
+									else if(key == 15 && grid[i][j].temp < 500)
+										grid[i][j].temp += 100;
+								}
+							} else if(grid[i][j].id == 11) {
+								stateChange(i, j, key, true);
+								grid[i][j].graved = true;
+							}
+						} else {
+							stateChange(i, j, key, true);
+							grid[i][j].graved = true;
+						}
+					}
+				}
+			}
+		} else {
+			var num = Math.ceil(penD * penD / 4) * ((mats[key].type == 3)+1);
+			for (let i = 0; i < num; i++) {
+				let rx = rNum(x-Math.floor((penD-1)/2)-1, x+Math.floor((penD-1)/2)-1);
+				let ry = rNum(y-Math.floor((penD-1)/2)-1, y+Math.floor((penD-1)/2)-1);
+				if(rx > 0 && ry > 0 && rx < dim.x-1 && ry < dim.y-1) {
+					
+					stateChange(rx, ry, key, true);
+					grid[rx][ry].graved = true;
+				
+				}
+			}
+		}
+	}
+	function colorT(t) {
+		if(isNaN(t)) {
+			return [0, 0, 0];
+		}
+		var temp = Math.floor(t/tempR)*tempR;
+		for (var i = 0; i < colors.length-1; i++) {
+			if(temp < colors[i+1].temp && temp >= colors[i].temp) {
+				let per = (temp - colors[i].temp) / (colors[i+1].temp - colors[i].temp);
+				let c = colors[i].color.map((item, index) => {
+					return item + per*(colors[i+1].color[index]-item);
+				});
+				return c;
+			}
+		}
+	}
+	function draw() {
+		for (let x = 0; x < dim.x; x++) {
+			for (let y = 0; y < dim.y; y++) {
+				let sc = 10;
+				if(view == 1) {
+					setpx(x, y, colorT(grid[x][y].temp).map(t => t*(1-mats[grid[x][y].id].type*0.05)));
+				} else if(grid[x][y].id == 9) { // fire
+					setpx(x, y, [255, grid[x][y].data.temp-230, 0]);
+				} else if(grid[x][y].id == 15) { // hot fire
+					setpx(x, y, [grid[x][y].data.temp-400, 115+(grid[x][y].data.temp-400)/25*14, 255]);
+				}else if((grid[x][y].id == 13) && grid[x][y].data.burning == true) { // burning
+					setpx(x, y, grid[x][y].data.burnColor);
+				} else {
+					setpx(x, y, grid[x][y].color);
+				}
+			}
+		}
+
+		ctx.putImageData(pxs, -1, -1);
+
+		ctx.fillStyle = 'brown';
+		ctx.fillRect(150, 0, 2, 100);
+
+		if(previousStepTimes != stepN && (stepN % 5 == 0 || times.total > 20)) {
+
+			ctx.fillStyle = 'black';
+			ctx.fillRect(152, 0, 50, 100);
+
+			previousStepTimes = stepN;
+			var prevAng = 0;
+			var looop = ['cellSteps', 'gravity', 'temps'];
+			var colors = {
+				cellSteps: 'red',
+				gravity: 'limegreen',
+				temps: 'blue',
+				total: 'orange'
+			};
+			for (let i = 0; i < looop.length; i++) {
+				ctx.beginPath();
+				ctx.moveTo(176, 20);
+				ctx.fillStyle = colors[looop[i]];
+				ctx.arc(176, 20, 15, prevAng, prevAng+(times[looop[i]]/times.total)*Math.PI*2);
+				ctx.fill();
+				prevAng += (times[looop[i]]/times.total)*Math.PI*2;
+			}
+			ctx.beginPath();
+			ctx.moveTo(176, 20);
+			ctx.fillStyle = 'orange';
+			ctx.arc(176, 20, 15, prevAng, Math.PI*2);
+			ctx.fill();
+
+			ctx.fillStyle = 'white';
+			ctx.font = '10px arial';
+			ctx.textAlign = 'center';
+			ctx.fillText(times.total.toFixed(2), 176, 45);
+			ctx.fillText('ms', 176, 52);
+			
+			let i = 0;
+			for (const key in prevTimes) {
+				ctx.beginPath();
+				ctx.strokeStyle = colors[key];
+				ctx.moveTo(152, 100-prevTimes[key][0]);
+				for (let i = 1; i < prevTimes[key].length; i++) {
+					ctx.lineTo(152+i, 100-prevTimes[key][i]);
+				}
+				ctx.stroke();
+				i++;
+			}
+			
+			ctx.beginPath();
+			ctx.fillStyle = 'orange';
+			ctx.fillRect(152, 80, 2, 1);
+		}
+		$('#simTemp').text(`Average Temp: ${isNaN(avrTemp) ? '--.--' : (avrTemp*9/5+32).toFixed(2)} F`);
+		//document.getElementById('simInfo').innerHTML = `avr: ${avrTemp.toFixed(2)} C<br>FPS: ${FPS}`;
+		
+		window.requestAnimationFrame(draw);
+	}
+	
+	function setpx(x, y, c, a=255) {
+		pxs.data[(y*dim.x + x)*4 + 0] = Math.round(c[0]);
+		pxs.data[(y*dim.x + x)*4 + 1] = Math.round(c[1]);
+		pxs.data[(y*dim.x + x)*4 + 2] = Math.round(c[2]);
+		pxs.data[(y*dim.x + x)*4 + 3] = a;
+	}
+
+	function gridObj(id, x, y, color=-1) {
+		return {
+			id: id,
+			graved: false,
+			pushedUp: false,
+			timer: 0,
+			color: color==-1 ? mats[id].color(x, y) : color,
+			temp: 20,
+			data: mats[id].data(x, y),
+			stateChanges: mats[id].stateChanges(),
+			burns: mats[id].burns()
+		};
+	}
+	function clearGrid() {
+		grid = [];
+		for (let x = 0; x < dim.x; x++) {
+			grid.push([]);
+			for (let y = 0; y < dim.y; y++) {
+				if(x == 0 || y == 0 || x == dim.x-1 || y == dim.y-1)
+					grid[x].push(gridObj(12, x, y, [255,0,255]));
+				else
+					grid[x].push(gridObj(0, x, y));
+			}
+		}
+	}
+	clearGrid();
+	draw();
+	var int = setInterval(step, 20);
+	$(document).ready(function () {
+		for (let i = 0; i < mats.length; i++) {
+			if(i == 4 || i == 20)
+				continue;
+			let square = $(document.createElement('div'));
+			square.addClass('w-12 h-12 relative');
+			square.css({ backgroundColor: 'rgb(' + mats[i].singleColor.join(',') + ')' });
+			square.attr('id', 'square' + i);
+			let popup = $(document.createElement('div'));
+			popup.addClass('popup');
+			popup.text(mats[i].name);
+			square.append(popup);
+			square.click(function () {
+				setKey(i);
+			});
+			$('#matSquares').append(square);
+		}
+		setKey(1);
+	});
+	function setKey(newKey) {
+		let textcolor = 'black';
+		let avr = newKey == -1 ? 255 : mats[newKey].singleColor.reduce((total, value) => total + value) / 3;
+		if(newKey != -1 && avr < 128 && mats[newKey].singleColor[0] < 240 && mats[newKey].singleColor[1] < 240)
+			textcolor = 'white';
+
+		$('#square' + key).css({ boxShadow: 'none' });
+		key = newKey;
+		$('#square' + key).css({ boxShadow: '0 0 2px 4px white inset' });
+		$('#matName').css({ backgroundColor: newKey == -1 ? 'rgb(239,68,68)' : 'rgb(' + mats[newKey].singleColor.join(',') + ')', color: textcolor });
+		$('#matName').text(newKey == -1 ? 'Temp Gun' : mats[newKey].name);
+	}
+</script>

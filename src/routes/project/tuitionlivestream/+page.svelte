@@ -27,7 +27,7 @@ p, blockquote {
 	<h2>Tuition Live Stream</h2>
 	<p>This is calculated off the base tuition for 2023-2024.</p>
 	<p>If you have a scholarship or something, then good job!</p>
-	<p>It only adds up during school time so if it isn't changing that's why.</p>
+	<p>It adds up during school days from 7:45am to 3pm.</p>
 </ProgramInfo>
 <div class="cash-money-background flex flex-col items-center gap-4 px-4" style="padding-top: 80px; padding-bottom: 24px;">
 	<div class="thick-black-border w-full p-4 bg-white" style="max-width: 600px">

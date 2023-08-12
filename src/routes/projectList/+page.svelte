@@ -75,6 +75,11 @@
 		</div>
 	</div>
 	<div class="toys-grid two-columns">
+		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/sandbox">
+			<img src={sandImage} alt="Sand" class="row-span-2 thick-black-border" />
+			<div class="font-IBMPlexMono text-2xl">Sand.box</div>
+			<div class="text-lg">&#x23F3; &#x1F4A7; &#x1F525 &#x1FAB5;<br>You have control of the elements.</div>
+		</a>
 		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/gravity">
 			<img src={gravityImage} alt="Gravity" class="row-span-2 thick-black-border" />
 			<div class="font-IBMPlexMono text-2xl">Gravity</div>
@@ -84,6 +89,11 @@
 			<img src={tlsImage} alt="My mindcraft" class="row-span-2 thick-black-border" />
 			<div class="font-IBMPlexMono text-2xl">Tuition Live Stream</div>
 			<div class="text-lg">Appreciate what your parents provide for you!</div>
+		</a>
+		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/threedee">
+			<img src={d3Image} alt="Three dee" class="row-span-2 thick-black-border" />
+			<div class="font-IBMPlexMono text-2xl">Homemade 3D Renderer</div>
+			<div class="text-lg">Who needs Three.js?? Not me!!</div>
 		</a>
 	</div>
 </div>
@@ -157,4 +167,6 @@ import lightblueImage from '$lib/assets/imgs/projects/lightblue.jpg';
 import ledlightsImage from '$lib/assets/imgs/projects/ledlights.jpg';
 import tlsImage from '$lib/assets/imgs/projects/tuitionlivestream.jpg';
 import gravityImage from '$lib/assets/imgs/projects/gravity.jpg';
+import sandImage from '$lib/assets/imgs/projects/sand.jpg';
+import d3Image from '$lib/assets/imgs/projects/threedee.gif';
 </script>

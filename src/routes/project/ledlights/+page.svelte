@@ -111,8 +111,13 @@ function drawPixels() {
 	}
 	ctx.fillStyle = 'rgb(120, 120, 120)';
 	ctx.font = (canvasWidth / 30) + 'px Arial';
+	ctx.textAlign = 'left';
 	ctx.fillText('DOOR', pixelDepth + pixelWidth0 * WALLS[0]*3/4, pixelDepth + canvasWidth / 20);
 	ctx.fillText('WINDOW', pixelDepth + pixelWidth2 * WALLS[0]*1/8, canvasHeight - (pixelDepth + canvasWidth / 50));
+	
+	ctx.textAlign = 'center';
+	ctx.fillText('UNDER CONSTRUCTION', canvasWidth / 2, canvasHeight / 2);
+	ctx.fillText('Please mind our dust.', canvasWidth / 2, canvasHeight / 2 + 30);
 }
 
 const socket = ioClient();
