@@ -87,24 +87,27 @@
 <svelte:window
   on:click={tryClosePopover}
 />
+<Analytics />
 <script lang="ts">
-	import "../app.css";
+import "../app.css";
 
-	import logo from '$lib/assets/imgs/whiteSmallBlack.png';
+import logo from '$lib/assets/imgs/whiteSmallBlack.png';
 
-	let popoverOpen = false;
+import { Analytics } from '@vercel/analytics/react';
 
-	let popoverButton;
+let popoverOpen = false;
 
-	function emptyFunction () {}
+let popoverButton;
 
-	function togglePopover() {
-		popoverOpen = !popoverOpen;
+function emptyFunction () {}
+
+function togglePopover() {
+	popoverOpen = !popoverOpen;
+}
+
+function tryClosePopover(e) {
+	if(!e.target.closest('.nav-button')) {
+		popoverOpen = false;
 	}
-
-	function tryClosePopover(e) {
-		if(!e.target.closest('.nav-button')) {
-			popoverOpen = false;
-		}
-	}
+}
 </script>
