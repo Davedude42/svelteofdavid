@@ -128,6 +128,23 @@
 
 	@apply px-4 text-2xl font-IBMPlexMono font-medium;
 }
+.code li {
+	display: flex;
+	flex-direction: row;
+}
+.code span {
+	width: 48px;
+	text-align: end;
+	padding: 0 6px;
+	margin-right: 14px;
+
+	flex-shrink: 0;
+
+	font-weight: 400;
+
+	@apply bg-gray-200;
+}
+
 </style>
 <div class="relative flex-grow flex flex-col items-center" style="margin-top: 80px;">
 	<div class="about-grid p-4">
@@ -158,23 +175,21 @@
 			<p class="py-2 font-semibold">
 				On my own, I have gotten to work with a few languages and technologies, including... 
 			</p>
-			<ul class="mt-2 p-4 thick-black-border bg-white font-IBMPlexMono font-medium">
-				<li>&nbsp;1. HTML/CSS/Javascript</li>
-				<li>&nbsp;2. Tailwind</li>
-				<li>&nbsp;3. Node</li>
-				<ul>
-					<li>&nbsp;&nbsp;4. Vue</li>
-					<li>&nbsp;&nbsp;5. Nuxt</li>
-					<li>&nbsp;&nbsp;6. React</li>
-					<li>&nbsp;&nbsp;7. Svelte (this site)</li>
-				</ul>
-				<li>&nbsp;8. PHP: Hypertext Preprocessor</li>
-				<li>&nbsp;9. SQL</li>
-				<li>10. Python</li>
-				<li>11. Java</li>
-				<li>12. TI Basic &lt;3</li>
-				<li>13. Scratch</li>
-				<li>14. git</li>
+			<ul class="mt-2 pr-2 thick-black-border bg-white font-IBMPlexMono font-medium code">
+				<li class="items-end"><span style="padding-top: 10px;">1</span>HTML/CSS/Javascript</li>
+				<li><span>2</span>Tailwind</li>
+				<li><span>3</span>Node</li>
+				<li><span style="margin-right: 36px;">4</span>Vue</li>
+				<li><span style="margin-right: 36px;">5</span>Nuxt</li>
+				<li><span style="margin-right: 36px;">6</span>React</li>
+				<li><span style="margin-right: 36px;">7</span>Svelte (this site)</li>
+				<li><span>8</span>PHP: Hypertext Preprocessor</li>
+				<li><span>9</span>SQL</li>
+				<li><span>10</span>Python</li>
+				<li><span>11</span>Java</li>
+				<li><span>12</span>TI Basic &lt;3</li>
+				<li><span>13</span>Scratch</li>
+				<li><span style="padding-bottom: 10px;">14</span>git</li>
 			</ul>
 		</div>
 		<div class="more-about-me thick-black-border flex flex-col comic-shadow bg-lighter p-4 font-medium">
