@@ -10,7 +10,12 @@
 </style>
 <div class="flex flex-col items-center justify-center p-4" style="padding-top: 120px;">
 	<div class="console-welcome flex gap-4" style="width: 100%; max-width: 800px;">
-		<img src={meImage} alt="meee" class="thick-black-border comic-shadow block self-center" style="height: 400px;" />
+		{#if whichText == 0}
+			<img src={continentalDivideImage} alt="meee" class="thick-black-border comic-shadow block self-center" style="height: 400px;" />
+		{/if}
+		{#if whichText == 1}
+			<img src={greatDayImage} alt="meee" class="thick-black-border comic-shadow block self-center" style="height: 400px;" />
+		{/if}
 		<pre class="flex-grow thick-black-border comic-shadow p-6 text-white bg-neutral-800 font-IBMPlexMono whitespace-pre-wrap" bind:this={typewriterElement}>{@html typewriterText}</pre>
 	</div>
 </div>
@@ -42,7 +47,6 @@ To answer all of these questions and more, navigate to the About section.
 If you really don't care, skip straight to the Projects section.\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b Up to you.  
 `.trim();
 
-let meImage: any = [continentalDivideImage, greatDayImage][whichText];
 
 let typewriterText: string = text;
 let typewriterIndex: number = 0;
