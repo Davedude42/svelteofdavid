@@ -186,17 +186,20 @@ function updateLivestream(): void {
 
 	let schoolDayStart = new Date(now);
 	schoolDayStart.setHours(7, 45, 0, 0);
+	let schoolDayEnd = new Date(now);
+	schoolDayEnd.setHours(15, 0, 0, 0);
 
 	let percentSchoolDay: number = Math.min(Math.max((now.getTime() - schoolDayStart.getTime()) / (1000 * 60 * 435), 0), 1); // 7:45 - 3:00
 
 	let today: number = percentSchoolDay * dayPrice;
 	
-	if(!isSchoolDay(now)) {
-		live = false
+	let schoolDay: boolean = isSchoolDay(now);
+	
+	if(!schoolDay) {
 		today = 0;
-	} else {
-		live = true;
 	}
+	
+	live = schoolDay && schoolDayStart < now && now < schoolDayEnd;
 
 	let year: number = 0;
 
