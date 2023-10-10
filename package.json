@@ -27,6 +27,7 @@
 	"dependencies": {
 		"@types/three": "^0.152.1",
 		"@vercel/analytics": "^1.0.2",
+		"colorsys": "^1.0.22",
 		"flickity": "^3.0.0",
 		"socket.io": "^4.7.1",
 		"socket.io-client": "^4.7.1",
