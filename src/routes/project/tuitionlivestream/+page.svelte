@@ -100,14 +100,20 @@ import CharacterChanger from "$lib/components/CharacterChanger.svelte";
 import ProgramInfo from '$lib/components/ProgramInfo.svelte';
 
 function isSchoolDay(d: Date): boolean {
-	if(d.getDay() === 0 || d.getDay() === 6 || d < new Date(yearStartAndEnd[0]) || d > new Date(yearStartAndEnd[1])) {
+	let yearEnd = new Date(yearStartAndEnd[1]);
+	yearEnd.setHours(23, 59);
+	
+	if(d.getDay() === 0 || d.getDay() === 6 || d < new Date(yearStartAndEnd[0]) || d > yearEnd) {
 		return false;
 	}
 
 	for (let i = 0; i < excludedDays.length; i++) {
 		const exclude: string[] = excludedDays[i];
+		
+		const excludeDates: Date[] = [new Date(exclude[0]), new Date(exclude[1])];
+		excludeDates[1].setHours(23, 59);
 
-		if(new Date(exclude[0]) <= d && d <= new Date(exclude[1])) {
+		if(excludeDates[0] <= d && d <= excludeDates[1]) {
 			return false;
 		}
 	}
@@ -142,10 +148,19 @@ function countSchoolDays(a: Date, b: Date): number {
 
 const yearPrice: number = 14250;
 
-const yearStartAndEnd: string[] = ['8/18/2023', '6/7/2024'];
+const yearStartAndEnd: string[] = ['8/18/2023', '5/24/2024'];
 const excludedDays: string[][] = [
-	['12/18/2023', '1/5/2024'],
-	['4/15/2024', '4/19/2024']
+	['9/4/2023', '9/4/2023'], // labor day
+	['10/6/2023', '10/9/2023'], // step-up day and columbus day
+	['10/13/2023', '10/13/2023'], // step-up day
+	['10/26/2023', '10/27/2023'], // parent-teacher conferences
+	['11/10/2023', '11/10/2023'], // veterans days
+	['11/22/2023', '11/24/2023'], // thanksgiving
+	['12/18/2023', '1/5/2024'], // exams and christmas break
+	['1/15/2024', '1/15/2024'], // martin luther king day
+	['2/29/2024', '2/29/2024'], // faculty retreat
+	['3/1/2024', '3/1/2024'], // dupage county institute day
+	['3/25/2024', '4/1/2024'], // spring break & easter monday
 ];
 
 let daysInYear: number = countSchoolDays(new Date(yearStartAndEnd[0]), new Date(yearStartAndEnd[1]));
@@ -171,17 +186,20 @@ function updateLivestream(): void {
 
 	let schoolDayStart = new Date(now);
 	schoolDayStart.setHours(7, 45, 0, 0);
+	let schoolDayEnd = new Date(now);
+	schoolDayEnd.setHours(15, 0, 0, 0);
 
 	let percentSchoolDay: number = Math.min(Math.max((now.getTime() - schoolDayStart.getTime()) / (1000 * 60 * 435), 0), 1); // 7:45 - 3:00
 
 	let today: number = percentSchoolDay * dayPrice;
 	
-	if(!isSchoolDay(now)) {
-		live = false
+	let schoolDay: boolean = isSchoolDay(now);
+	
+	if(!schoolDay) {
 		today = 0;
-	} else {
-		live = true;
 	}
+	
+	live = schoolDay && schoolDayStart < now && now < schoolDayEnd;
 
 	let year: number = 0;
 
