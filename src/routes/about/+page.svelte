@@ -154,7 +154,7 @@
 		<div class="meee-description p-4 thick-black-border comic-shadow bg-secondary">
 			<h3 class="pb-4 text-lg font-semibold font-IBMPlexMono">I'm <span class="bg-white">David Haroldsen</span></h3>
 			<p class="font-semibold">
-				I'm going to be a Senior in High School, and as you can tell, I program.
+				I'm a Senior in High School, and as you can tell, I program.
 			</p>
 		</div>
 		<div class="my-journey thick-black-border comic-shadow bg-lighter p-4 font-medium">
@@ -167,7 +167,7 @@
 				</div>
 			</h3>
 			<p class="py-2 font-semibold">
-				I started programming way back in 5th grade. I got this website as a Christmas gift two years later in 2018; it's been a pretty good gift.
+				I started programming way back in 5th grade. I got this website as a Christmas gift two years later in 2018, and it's been a pretty good gift. I add stuff to it every once in a while. 
 			</p>
 			<p class="py-2 font-semibold">
 				Now, I've been working for a small tech company doing their front-end development for about two years.
