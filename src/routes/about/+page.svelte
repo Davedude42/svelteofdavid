@@ -24,7 +24,7 @@
 	width: 100%;
 	max-width: 30rem;
 }
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 64rem) {
 	.meee-image {
 		grid-column: 1 / 2; 
 		grid-row: 1 / 4;
@@ -42,12 +42,12 @@
 		grid-row: 3 / 6;
 	}
 	.about-grid {
-		grid-template-columns: 16rem 13fr 10fr;
+		grid-template-columns: 16rem 13fr 12fr;
 		grid-template-rows: 2rem 3rem 11rem 1rem 1fr;
 		row-gap: 0rem;
 
 		width: 100%;
-		max-width: 72rem;
+		max-width: 76rem;
 	}
 }
 .scene {
@@ -140,9 +140,26 @@
 
 	flex-shrink: 0;
 
-	font-weight: 400;
+	font-weight: 300;
 
-	@apply bg-gray-200;
+	@apply bg-gray-200 text-gray-600;
+}
+
+.experience-item {
+	display: grid;
+	grid-template-columns: 6rem 1fr;
+	grid-template-rows: min-content 1fr;
+	row-gap: 1rem;
+	column-gap: 2rem;
+
+	padding: 1rem;
+
+	font-weight: 500;
+}
+.experience-item:active {
+	transform: translate(4px, 4px);
+
+	box-shadow: 2px 2px black;
 }
 
 </style>
@@ -170,12 +187,12 @@
 				I started programming way back in 5th grade. I got this website as a Christmas gift two years later in 2018, and it's been a pretty good gift. I add stuff to it every once in a while. 
 			</p>
 			<p class="py-2 font-semibold">
-				Now, I've been working for a small tech company doing their front-end development for about two years.
+				I've taken a couple little courses on specific languages, but I'm mostly self taught from videos and docs on the internet.
 			</p>
 			<p class="py-2 font-semibold">
-				On my own, I have gotten to work with a few languages and technologies, including... 
+				Over time, I have gotten to work with a few languages and technologies, including... 
 			</p>
-			<ul class="mt-2 pr-2 thick-black-border bg-white font-IBMPlexMono font-medium code">
+			<ul class="mt-2 pr-2 thick-black-border bg-white font-IBMPlexMono code">
 				<li class="items-end"><span style="padding-top: 10px;">1</span>HTML/CSS/Javascript</li>
 				<li><span>2</span>Tailwind</li>
 				<li><span>3</span>Node</li>
@@ -192,6 +209,27 @@
 				<li><span style="padding-bottom: 10px;">14</span>git</li>
 			</ul>
 		</div>
+		<div class="more-about-me flex flex-col gap-4">
+			<div class="thick-black-border flex flex-col comic-shadow bg-lighter p-4 font-medium">
+				<h3 class="pb-2 text-2xl font-IBMPlexMono font-medium">
+					Work Experience
+				</h3>
+				<p class="py-2 font-semibold">
+					Along with my personal projects, I have also had some work experience programming:
+				</p>
+			</div>
+			
+			<div class="flex flex-col items-stretch px-4">
+				<a href="/experience" class="experience-item thick-black-border comic-shadow hover:bg-lighter">
+					<img src="https://scontent-ord5-2.xx.fbcdn.net/v/t39.30808-6/356365628_1008591823862606_185427253985873944_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=5f2048&_nc_ohc=rkYbJEE3rDUAX-2OQ88&_nc_ht=scontent-ord5-2.xx&oh=00_AfCgbeycbUFRZt52552KaC0H5HPCn00RLvQORN1jfICSBw&oe=65436286" alt="Swimmy" class="row-span-2 thick-black-border">	
+					<div class="font-IBMPlexMono text-lg">Swimage</div>
+					<div class="text-base">2 Years designing web portal</div>
+				</a>
+			</div>
+		</div>
+
+
+		<!--
 		<div class="more-about-me thick-black-border flex flex-col comic-shadow bg-lighter p-4 font-medium">
 			<h3 class="pb-2 text-2xl font-IBMPlexMono font-medium">
 				More about me
@@ -244,11 +282,12 @@
 				<button class="flex-1 thick-black-border h-10 bg-white hover:bg-lighter active:bg-primary" on:click={nextSlide}><i class="fa-solid fa-chevron-right"></i></button>
 			</div>
 		</div>
+	-->
 	</div>
 </div>
-<svelte:window
+<!--<svelte:window
 	on:resize={recreateCarousel}
-/>
+/>-->
 <script>
 import { onDestroy, onMount } from 'svelte';
 
@@ -321,7 +360,7 @@ function nextSlide() {
 
 	recreateCarousel();
 }
-
+/*
 let int;
 
 onMount(() => {
@@ -336,5 +375,5 @@ onMount(() => {
 
 onDestroy(() => {
 	clearInterval(int);
-})
+})*/
 </script>
