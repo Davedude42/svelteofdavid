@@ -221,7 +221,7 @@
 			
 			<div class="flex flex-col items-stretch px-4">
 				<a href="/experience" class="experience-item thick-black-border comic-shadow hover:bg-lighter">
-					<img src="https://scontent-ord5-2.xx.fbcdn.net/v/t39.30808-6/356365628_1008591823862606_185427253985873944_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=5f2048&_nc_ohc=rkYbJEE3rDUAX-2OQ88&_nc_ht=scontent-ord5-2.xx&oh=00_AfCgbeycbUFRZt52552KaC0H5HPCn00RLvQORN1jfICSBw&oe=65436286" alt="Swimmy" class="row-span-2 thick-black-border">	
+					<img src={swimmy} alt="Swimmy" class="row-span-2 thick-black-border">	
 					<div class="font-IBMPlexMono text-lg">Swimage</div>
 					<div class="text-base">2 Years designing web portal</div>
 				</a>
@@ -296,6 +296,7 @@ import rubikscube from '$lib/assets/imgs/about/rubikscube.jpg';
 import scouts from '$lib/assets/imgs/about/scouts.jpg';
 import mads from '$lib/assets/imgs/about/mads.jpg';
 import schobo from '$lib/assets/imgs/about/naqt.jpg';
+import swimmy from '$lib/assets/imgs/about/swimmy.jpg';
 
 let sceneEl;
 let carouselEl;
