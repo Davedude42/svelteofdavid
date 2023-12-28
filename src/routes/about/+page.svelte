@@ -1,380 +1,148 @@
 <style>
-.meee-image {
-	grid-row: 1 / 2;
-	width: 16rem;
-}
-.meee-description {
-	grid-row: 2 / 3;
-}
-.my-journey {
-	grid-row: 3 / 4;
-}
-.more-about-me {
-	grid-row: 4 / 5;
-}
-.about-grid {
-	display: grid;
-	grid-template-columns: 1fr;
-	grid-template-rows: 16rem min-content min-content max-content;
-	column-gap: 2rem;
-	row-gap: 2rem;
-	align-items: start;
-	justify-items: center;
-	
-	width: 100%;
-	max-width: 30rem;
-}
-@media only screen and (min-width: 64rem) {
-	.meee-image {
-		grid-column: 1 / 2; 
-		grid-row: 1 / 4;
-	}
-	.meee-description {
-		grid-column: 1 / 2; 
-		grid-row: 5 / 6;
-	}
-	.my-journey {
-		grid-column: 2 / 3; 
-		grid-row: 2 / 6;
-	}
-	.more-about-me {
-		grid-column: 3 / 4;
-		grid-row: 3 / 6;
-	}
-	.about-grid {
-		grid-template-columns: 16rem 13fr 12fr;
-		grid-template-rows: 2rem 3rem 11rem 1rem 1fr;
-		row-gap: 0rem;
-
-		width: 100%;
-		max-width: 76rem;
-	}
-}
-.scene {
-	position: relative;
-	width: 100%;
-
-	perspective: 1000px;
-
-	overflow: hidden;
-}
-.carousel {
-	position: absolute;
-	
-	width: 100%;
-	height: 100%;
-
-  transform-style: preserve-3d;
-
-	
-}
-.carousel-cell {
+.about-outside {
 	display: flex;
 	flex-direction: column;
-
-	position: absolute;
-	top: 10px;
-	left: 10px;
-
-	width: 190px;
-	height: 140px;
-	border: 4px solid black;
-	
-	background-color: white;
-
-	@apply font-IBMPlexMono;
-}
-
-.carousel-cell img {
-	position: absolute;
-	inset: 0px;
+	align-items: center;
+	gap: 4rem;
 
 	width: 100%;
-	height: 100%;
-
-	object-fit: cover;
-	object-position: center;
+	
+	margin-top: 80px;
+	margin-bottom: 2rem;
 }
 
-.david-title-wrapper {
+.me-and-journey {
 	display: flex;
-	flex-direction: row;
-	align-items: stretch;
-
-	box-sizing: content-box;
-
-	@apply h-12 py-4;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 0;
 }
-
-@media only screen and (min-width: 768px) and (max-width: 1272px) {
-	.david-title-wrapper {
-		align-self: start;
-		padding-left: 510px;
+@media only screen and (min-width: 64rem) {
+	.me-and-journey {
+		flex-direction: row;
+		align-items: start;
+		gap: 4rem;
 	}
 }
 
-.david-title {
+.arrow-list {
+	padding-left: 1rem;
+}
+.arrow-list li {
+	padding: 4px 0;
+	padding-left: 1rem;
+}
+.arrow-list li::marker {
+  content: "\f061";
+  font-family: FontAwesome;
+}
+
+.languages-list {
+	counter-reset: langs;
+	@apply font-IBMPlexMono;
+}
+.languages-list li:before {
+  counter-increment: langs;
+	content: counter(langs);
+	
+	display: inline-block;
+
+	width: 3rem;
+	padding: 1px 0;
+	padding-right: 0.5rem;
+	margin-right: 1rem;
+
+	@apply bg-neutral-200 text-neutral-400;
+
+	text-align: right;
+}
+.languages-list li.extra-bump:before {
+	margin-right: 36px;
+}
+
+.work-experience {
+	align-self: stretch;
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	align-items: center;
-	justify-content: center;
+	gap: 2rem;
 
-	min-width: 192px;
-	border: 4px solid black;
+	width: 100%;
+	padding: 2rem;
+	border-left: none;
+	border-right: none;
 
-	background-color: white;
-
-	box-sizing: content-box;
-
-	@apply px-4 text-2xl font-IBMPlexMono font-medium;
+	@apply bg-primary;
 }
-.code li {
-	display: flex;
-	flex-direction: row;
-}
-.code span {
-	width: 48px;
-	text-align: end;
-	padding: 0 6px;
-	margin-right: 14px;
-
-	flex-shrink: 0;
-
-	font-weight: 300;
-
-	@apply bg-gray-200 text-gray-600;
-}
-
-.experience-item {
-	display: grid;
-	grid-template-columns: 6rem 1fr;
-	grid-template-rows: min-content 1fr;
-	row-gap: 1rem;
-	column-gap: 2rem;
-
-	padding: 1rem;
-
-	font-weight: 500;
-}
-.experience-item:active {
-	transform: translate(4px, 4px);
-
-	box-shadow: 2px 2px black;
-}
-
 </style>
-<div class="relative flex-grow flex flex-col items-center" style="margin-top: 80px;">
-	<div class="about-grid p-4">
-		<div class="meee-image thick-black-border comic-shadow bg-white p-4">
-			<img src={mee} class="w-full h-full" alt="meeeee" />
+<div class="about-outside">
+	<div class="me-and-journey">
+		<div class="flex flex-col items-center gap-8" style="flex: 0 1 18rem;">
+			<ThickBlackContent>
+				<img src={mee} alt="It's me!! With my LED lights too." />
+			</ThickBlackContent>
+			<ThickBlackContent elementClass="bg-secondary">
+				<p class="font-IBMPlexMono font-bold text-lg">I'm <span class="bg-white">&nbsp;David Haroldsen&nbsp;</span></p>
+				<p class="pt-4 font-medium">I'm a Senior in High School, and as you can tell, I program.</p>
+			</ThickBlackContent>
 		</div>
-		<div class="meee-description p-4 thick-black-border comic-shadow bg-secondary">
-			<h3 class="pb-4 text-lg font-semibold font-IBMPlexMono">I'm <span class="bg-white">David Haroldsen</span></h3>
-			<p class="font-semibold">
-				I'm a Senior in High School, and as you can tell, I program.
-			</p>
-		</div>
-		<div class="my-journey thick-black-border comic-shadow bg-lighter p-4 font-medium">
-			<h3 class="flex flex-row items-center pb-2 text-2xl font-IBMPlexMono font-medium">
-				<div class="flex-grow">
-					My Journey
+		<div class="flex flex-col gap-8" style="flex: 0 1 30rem; padding-top: 2rem;">
+			<ThickBlackContent elementClass="row-span-2">
+				<p class="font-IBMPlexMono font-semibold text-lg pb-2">My Journey</p>
+				<ul class="arrow-list py-2">
+					<li>Started programming in 5th grade.</li>
+					<li>Mostly self taught from videos and docs on the internet.</li>
+					<li>Got this website as a Christmas gift in 2018.<br>(it's been a good gift)</li>
+					<li>Have been updating it since.</li>
+				</ul>
+			</ThickBlackContent>
+			<ThickBlackContent elementClass="row-span-2" elementStyle="padding: 0;">
+				<div class="relative flex flex-row items-center justify-center gap-2 bg-neutral-300 h-10 px-3 font-IBMPlexMono font-semibold text-base">
+					<div class="absolute left-3 top-3 text-xs">
+						<i class="fa-solid fa-square text-red-500"></i>
+						<i class="fa-solid fa-square text-yellow-500"></i>
+						<i class="fa-solid fa-square text-green-500"></i>
+					</div>
+					Languages/Techs I've learned
 				</div>
-				<div class="pr-3 text-4xl">
-					<i class="fa-solid fa-person-hiking pr-3"></i><i class="fa-solid fa-mountain"></i>
-				</div>
-			</h3>
-			<p class="py-2 font-semibold">
-				I started programming way back in 5th grade. I got this website as a Christmas gift two years later in 2018, and it's been a pretty good gift. I add stuff to it every once in a while. 
-			</p>
-			<p class="py-2 font-semibold">
-				I've taken a couple little courses on specific languages, but I'm mostly self taught from videos and docs on the internet.
-			</p>
-			<p class="py-2 font-semibold">
-				Over time, I have gotten to work with a few languages and technologies, including... 
-			</p>
-			<ul class="mt-2 pr-2 thick-black-border bg-white font-IBMPlexMono code">
-				<li class="items-end"><span style="padding-top: 10px;">1</span>HTML/CSS/Javascript</li>
-				<li><span>2</span>Tailwind</li>
-				<li><span>3</span>Node</li>
-				<li><span style="margin-right: 36px;">4</span>Vue</li>
-				<li><span style="margin-right: 36px;">5</span>Nuxt</li>
-				<li><span style="margin-right: 36px;">6</span>React</li>
-				<li><span style="margin-right: 36px;">7</span>Svelte (this site)</li>
-				<li><span>8</span>PHP: Hypertext Preprocessor</li>
-				<li><span>9</span>SQL</li>
-				<li><span>10</span>Python</li>
-				<li><span>11</span>Java</li>
-				<li><span>12</span>TI Basic &lt;3</li>
-				<li><span>13</span>Scratch</li>
-				<li><span style="padding-bottom: 10px;">14</span>git</li>
-			</ul>
+				<ol class="languages-list">
+					<li>HTML/CSS/Javascript</li>
+					<li>Tailwind</li>
+					<li>Node</li>
+					<li class="extra-bump">Vue</li>
+					<li class="extra-bump">Nuxt</li>
+					<li class="extra-bump">Svelte (this site)</li>
+					<li class="extra-bump">React</li>
+					<li>PHP: Hypertext Preprocessor</li>
+					<li>SQL</li>
+					<li>Python</li>
+					<li>Java</li>
+					<li>TI Basic &lt;3</li>
+				</ol>
+			</ThickBlackContent>
 		</div>
-		<div class="more-about-me flex flex-col gap-4">
-			<div class="thick-black-border flex flex-col comic-shadow bg-lighter p-4 font-medium">
-				<h3 class="pb-2 text-2xl font-IBMPlexMono font-medium">
-					Work Experience
-				</h3>
-				<p class="py-2 font-semibold">
-					Along with my personal projects, I have also had some work experience programming:
-				</p>
-			</div>
-			
-			<div class="flex flex-col items-stretch px-4">
-				<a href="/experience" class="experience-item thick-black-border comic-shadow hover:bg-lighter">
-					<img src={swimmy} alt="Swimmy" class="row-span-2 thick-black-border">	
+	</div>
+	<div class="work-experience thick-black-border">
+		<h2 class="font-semibold text-3xl font-IBMPlexMono">Work Experience</h2>
+		<div class="flex flex-row justify-center gap-6 w-full">
+			<a href="/experience" class="contents">
+				<OutlandishButton elementStyle="width: 280px; height: 350px;" elementClass="flex-shrink-0 flex flex-col items-center justify-evenly !p-3">
+					<img src={swimmy} alt="Swimmy" class="thick-black-border">	
 					<div class="font-IBMPlexMono text-lg">Swimage</div>
 					<div class="text-base">2 Years designing web portal</div>
-				</a>
+				</OutlandishButton>
+			</a>
+			<div style="width: 220px; height: 350px; border: 4px dashed white; opacity: 0.4;" class="flex-shrink flex flex-row items-center justify-center p-4 text-xl font-bold text-white">
+				More experience<br>coming soon...
 			</div>
 		</div>
-
-
-		<!--
-		<div class="more-about-me thick-black-border flex flex-col comic-shadow bg-lighter p-4 font-medium">
-			<h3 class="pb-2 text-2xl font-IBMPlexMono font-medium">
-				More about me
-			</h3>
-			<p class="py-2 font-semibold">
-				I do some things other than programming too every once in a while. Here is an interactive slideshow of other things I do:
-			</p>
-			<div class="scene" bind:this={sceneEl}>
-				<div class="carousel" bind:this={carouselEl}>
-					<div class="carousel-cell">
-						<div class="flex-grow relative overflow-hidden">
-							<img src={scouts} alt="boy scouts shirt">
-						</div>
-						<div class="p-4 border-t-4 border-black">
-							<p class="pb-1 font-bold">Boy Scouts</p>
-							<p class="text-sm">I am more outdoorsy than the average person.</p>
-						</div>
-					</div>
-					<div class="carousel-cell">
-						<div class="flex-grow relative overflow-hidden">
-							<img src={mads} alt="singers">
-						</div>
-						<div class="p-4 border-t-4 border-black">
-							<p class="pb-1 font-bold">Madrigals</p>
-							<p class="text-sm">I really enjoy singing, even though I'm a bass.</p>
-						</div>
-					</div>
-					<div class="carousel-cell">
-						<div class="flex-grow relative overflow-hidden">
-							<img src={rubikscube} alt="big ol rubik's cube">
-						</div>
-						<div class="p-4 border-t-4 border-black">
-							<p class="pb-1 font-bold">Rubik's Cube</p>
-							<p class="text-sm">3x3 Record: 40 sec</p>
-						</div>
-					</div>
-					<div class="carousel-cell">
-						<div class="flex-grow relative overflow-hidden">
-							<img src={schobo} alt="amazing scholastic bowlers">
-						</div>
-						<div class="p-4 border-t-4 border-black">
-							<p class="pb-1 font-bold">Scholastic Bowl</p>
-							<p class="text-sm">Our team went to NAQT Nationals the last two years.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="flex flex-row gap-2" style="padding: 10px; padding-top: 0px;">
-				<button class="flex-1 thick-black-border h-10 bg-white hover:bg-lighter active:bg-primary" on:click={prevSlide}><i class="fa-solid fa-chevron-left"></i></button>
-				<button class="flex-1 thick-black-border h-10 bg-white hover:bg-lighter active:bg-primary" on:click={nextSlide}><i class="fa-solid fa-chevron-right"></i></button>
-			</div>
-		</div>
-	-->
 	</div>
 </div>
-<!--<svelte:window
-	on:resize={recreateCarousel}
-/>-->
-<script>
-import { onDestroy, onMount } from 'svelte';
+<script lang="ts">
+import ThickBlackContent from "$lib/components/ThickBlackContent.svelte";
+import OutlandishButton from "$lib/components/OutlandishButton.svelte";
 
 import mee from '$lib/assets/imgs/mee.jpg';
-import rubikscube from '$lib/assets/imgs/about/rubikscube.jpg';
-import scouts from '$lib/assets/imgs/about/scouts.jpg';
-import mads from '$lib/assets/imgs/about/mads.jpg';
-import schobo from '$lib/assets/imgs/about/naqt.jpg';
 import swimmy from '$lib/assets/imgs/about/swimmy.jpg';
-
-let sceneEl;
-let carouselEl;
-
-let cellWidth = 0;
-let cellHeight = 0;
-
-let selectedCell = 0;
-
-function recreateCarousel() {
-	let w = carouselEl.offsetWidth;
-	let h = w;
-
-	sceneEl.style.height = h + 'px';
-
-	cellWidth = w - 20;
-	cellHeight = h - 20;
-
-	let kiddies = carouselEl.children;
-
-	let theta = 360 / kiddies.length;
-	let depth = (w / 2) / Math.tan((theta / 2)/180*Math.PI);
-
-	for (let i = 0; i < kiddies.length; i++) {
-		kiddies[i].style.width = cellWidth + 'px';
-		kiddies[i].style.height = cellHeight + 'px';
-
-		kiddies[i].style.transform = `rotateY(${theta * i}deg) translateZ(${depth}px)`;
-
-		let correctedSelectedCell = selectedCell;
-
-		while(correctedSelectedCell < 0) correctedSelectedCell += kiddies.length;
-		while(correctedSelectedCell >= kiddies.length) correctedSelectedCell -= kiddies.length;
-
-		if(correctedSelectedCell == i) {
-			kiddies[i].style.opacity = 1;
-		} else {
-			kiddies[i].style.opacity = 0;
-		}
-	}
-
-	carouselEl.style.transform = `translateZ(-${depth}px) rotateY(${-theta * selectedCell}deg)`;
-	setTimeout(() => {
-		carouselEl.style.transition = 'transform 0.5s';
-		for (let i = 0; i < kiddies.length; i++) {
-			kiddies[i].style.transition = 'opacity 0.5s';
-		}
-	}, 100);
-}
-
-function prevSlide() {
-	clearInterval(int);
-
-	selectedCell--;
-
-	recreateCarousel();
-}
-function nextSlide() {
-	clearInterval(int);
-
-	selectedCell++;
-
-	recreateCarousel();
-}
-/*
-let int;
-
-onMount(() => {
-	int = setInterval(() => {
-		selectedCell++;
-
-		recreateCarousel();
-	}, 10000);
-
-	recreateCarousel();
-});
-
-onDestroy(() => {
-	clearInterval(int);
-})*/
 </script>
