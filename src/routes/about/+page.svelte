@@ -4,8 +4,6 @@
 	flex-direction: column;
 	align-items: center;
 	gap: 4rem;
-
-	width: 100%;
 	
 	margin-top: 80px;
 	margin-bottom: 2rem;
@@ -16,7 +14,9 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	gap: 0;
+	gap: 0px;
+
+	padding: 0 1rem;
 }
 @media only screen and (min-width: 64rem) {
 	.me-and-journey {
@@ -66,10 +66,8 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 2rem;
 
 	width: 100%;
-	padding: 2rem;
 	border-left: none;
 	border-right: none;
 
@@ -124,8 +122,8 @@
 		</div>
 	</div>
 	<div class="work-experience thick-black-border">
-		<h2 class="font-semibold text-3xl font-IBMPlexMono">Work Experience</h2>
-		<div class="flex flex-row justify-center gap-6 w-full">
+		<h2 class="p-6 pb-0 font-semibold text-3xl font-IBMPlexMono">Work Experience</h2>
+		<div class="flex flex-row justify-start sm:justify-center gap-6 p-6 w-full overflow-x-auto">
 			<a href="/experience" class="contents">
 				<OutlandishButton elementStyle="width: 280px; height: 350px;" elementClass="flex-shrink-0 flex flex-col items-center justify-evenly !p-3">
 					<img src={swimmy} alt="Swimmy" class="thick-black-border">	
@@ -133,7 +131,7 @@
 					<div class="text-base">2 Years designing web portal</div>
 				</OutlandishButton>
 			</a>
-			<div style="width: 220px; height: 350px; border: 4px dashed white; opacity: 0.4;" class="flex-shrink flex flex-row items-center justify-center p-4 text-xl font-bold text-white">
+			<div style="width: 220px; height: 350px; border: 4px dashed white; opacity: 0.4;" class="flex-shrink-0 flex flex-row items-center justify-center p-4 text-xl font-bold text-white">
 				More experience<br>coming soon...
 			</div>
 		</div>
