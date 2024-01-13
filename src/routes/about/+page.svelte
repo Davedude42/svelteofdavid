@@ -30,7 +30,7 @@
 	padding-left: 1rem;
 }
 .arrow-list li {
-	padding: 4px 0;
+	padding: 6px 0;
 	padding-left: 1rem;
 }
 .arrow-list li::marker {

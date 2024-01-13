@@ -46,7 +46,7 @@
 }
 
 </style>
-<div class="relative flex-grow flex flex-col items-stretch gap-4">
+<div class="relative flex-grow flex flex-col items-stretch gap-6 pb-8">
 	<div class="self-center flex flex-col items-stretch w-96 thick-black-border" style="margin-top: 80px;">
 		<div class="project-title p-2 bg-black text-white text-center font-IBMPlexMono font-bold text-xl">
 			Projects
@@ -69,7 +69,7 @@
 			<div class="text-lg">My strip of Light Emitting Diodes</div>
 		</a>
 	</div>
-	<div class="self-center flex flex-col items-stretch w-96 thick-black-border">
+	<div class="self-center flex flex-col items-stretch w-96 thick-black-border mt-1.5">
 		<div class="project-title p-2 bg-black text-white text-center font-IBMPlexMono font-bold text-xl">
 			Toys
 		</div>
@@ -94,6 +94,18 @@
 			<img src={d3Image} alt="Three dee" class="row-span-2 thick-black-border" />
 			<div class="font-IBMPlexMono text-2xl">Homemade 3D Renderer</div>
 			<div class="text-lg">Who needs Three.js?? Not me!!</div>
+		</a>
+	</div>
+	<div class="self-center flex flex-col items-stretch w-96 thick-black-border mt-1.5">
+		<div class="project-title p-2 bg-black text-white text-center font-IBMPlexMono font-bold text-xl">
+			Published Work
+		</div>
+	</div>
+	<div class="toys-grid one-column">
+		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/bestris">
+			<img src={bestrisImage} alt="Bestris icon" class="row-span-2 thick-black-border rounded-full" />
+			<div class="font-IBMPlexMono text-2xl">Bestris</div>
+			<div class="text-lg">My Tetris clone for the Samsung Watch</div>
 		</a>
 	</div>
 </div>
@@ -169,4 +181,5 @@ import tlsImage from '$lib/assets/imgs/projects/tuitionlivestream.jpg';
 import gravityImage from '$lib/assets/imgs/projects/gravity.jpg';
 import sandImage from '$lib/assets/imgs/projects/sand.jpg';
 import d3Image from '$lib/assets/imgs/projects/threedee.gif';
+import bestrisImage from '$lib/assets/imgs/projects/bestris.jpg';
 </script>
