@@ -85,11 +85,11 @@
 			<div class="font-IBMPlexMono text-2xl">Gravity</div>
 			<div class="text-lg">Take a break from the world by smashing some circles against each other.</div>
 		</a>
-		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/tuitionlivestream">
+		<!--<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/tuitionlivestream">
 			<img src={tlsImage} alt="My mindcraft" class="row-span-2 thick-black-border" />
 			<div class="font-IBMPlexMono text-2xl">Tuition Live Stream</div>
 			<div class="text-lg">Appreciate what your parents provide for you!</div>
-		</a>
+		</a>-->
 		<a class="project-item thick-black-border comic-shadow bg-white hover:bg-lighter" href="/project/threedee">
 			<img src={d3Image} alt="Three dee" class="row-span-2 thick-black-border" />
 			<div class="font-IBMPlexMono text-2xl">Homemade 3D Renderer</div>
