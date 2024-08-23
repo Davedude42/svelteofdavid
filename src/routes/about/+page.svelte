@@ -82,7 +82,7 @@
 			</ThickBlackContent>
 			<ThickBlackContent elementClass="bg-secondary">
 				<p class="font-IBMPlexMono font-bold text-lg">I'm <span class="bg-white">&nbsp;David Haroldsen&nbsp;</span></p>
-				<p class="pt-4 font-medium">I'm a Senior in High School, and as you can tell, I program.</p>
+				<p class="pt-4 font-medium">I'm a Freshman at BYU, and as you can tell, I program.</p>
 			</ThickBlackContent>
 		</div>
 		<div class="flex flex-col gap-8" style="flex: 0 1 30rem; padding-top: 2rem;">
